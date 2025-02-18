@@ -18,21 +18,18 @@ function [SS] = Calculate_Starship_Budget(C, MTV, SS)
     % T/W at Sea Level - Starship
     %[SS.TW0] = Propulsion(SS.TOGW);
     [SS] = Propulsion_SS(SS);
-
-    % [kg] Crew Weight
-    Wcrew = C.fcrew * MTV.Ncrew;
     
     % [kg] Starship Operating Empty Weight (Dry Weight)
-    SS.OEW = (SS.Istr*SS.Kw*SS.Spln + (SS.TW0)*SS.WR*(MTV.Wpay + Wcrew)/SS.E_TW + SS.Cun + MTV.Ncrew*(SS.fmnd + C.fcprv)) / ...
+    SS.OEW = (SS.Istr*SS.Kw*SS.Spln + (SS.TW0)*SS.WR*(MTV.Wpay)/SS.E_TW + SS.Cun) / ...
              (1/(1 + C.mua) - C.fsys - (SS.TW0)*SS.WR/SS.E_TW);
     
     % Weight and Vol Budgets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     % [kg] Starship Weight Budget
-    SS.OWEw = SS.OEW + MTV.Wpay + Wcrew;
+    SS.OWEw = SS.OEW + MTV.Wpay;
     
     % [kg] Starship Volume Budget
-    SS.OWEv = (SS.tau*SS.Spln^1.5*(1 - SS.kvs - SS.kvv) - MTV.Ncrew*(C.vcprv + MTV.kcrew) - SS.Vun - MTV.Wpay/C.rho_pay) / ...
+    SS.OWEv = (SS.tau*SS.Spln^1.5*(1 - SS.kvs - SS.kvv)- SS.Vun - MTV.Wpay/C.rho_pay) / ...
               ((SS.WR - 1)/SS.rho_ppl + SS.kve*(SS.TW0)*SS.WR);
 
     % Propellant Stuff ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -222,8 +219,8 @@ for a = 1: 1: length(Wpay)
                 % Check SS ERROR
                 [ERROR_SS] = Solve_SS_OWE(C, MTV, SSi, x);
                 if ERROR_SS(1) > 0.001 || ERROR_SS(2) > 0.001
-                    ERROR_SS
-                    disp('SS FAIL') 
+                    % ERROR_SS
+                    % disp('SS FAIL') 
 
                 else
 
@@ -280,17 +277,16 @@ for a = 1: 1: length(Wpay)
 end
 
 %% Plots
+close all
 
-<<<<<<< Updated upstream
 % Plot Properties
 P.Color = 'Black';
 
 % [kg, m^2] Plot OEW vs Planform Area
 Plot_Spln_vs_OEW(VehicleChartTable.SSi_Spln, VehicleChartTable.SSi_OEW, P);
-=======
+
 % [kg, m^2] Plot OEW vs Planform Area
-Plot_Spln_vs_OEW(Spln, OEW, P);
->>>>>>> Stashed changes
+Plot_Spln_vs_OEW(VehicleChartTable.SHi_Spln, VehicleChartTable.SHi_OEW, P);
 
 %% ~~~
 %}

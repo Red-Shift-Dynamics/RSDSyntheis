@@ -17,8 +17,8 @@ function Plot_Spln_vs_OEW(Spln, OEW, P);
     % Axis Properties
     P.x_Label  = 'Planform Area, Spln (m^2)';
     P.y_Label  = 'Operating Empty Weight, OEW (kg)';
-    P.x_Tick_I = 50;
-    P.y_Tick_I = 10000;
+    P.x_Tick_I = ;
+    P.y_Tick_I = 2;
     P.x_Domain = [floor(min(x) / P.x_Tick_I) * P.x_Tick_I, ceil(max(x) / P.x_Tick_I) * P.x_Tick_I];
     P.y_Domain = [floor(min(y) / P.y_Tick_I) * P.y_Tick_I, ceil(max(y) / P.y_Tick_I) * P.y_Tick_I];
     
