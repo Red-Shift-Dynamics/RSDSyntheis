@@ -149,7 +149,7 @@ kcrew = 0;
 %hleo = [200: 50: 300];
 hleo = 200;
 
-% [km/s] Separation Velocity
+% [m/s] Separation Velocity
 %v_sep = [100: 20: 200];
 v_sep = 100;
  
@@ -251,13 +251,17 @@ for a = 1: 1: length(Wpay)
                             % disp('SH FAIL')
 
                         else
+
+                            % [int#] Creates Vehicle Counter
 							VehicleNo = VehicleNo + 1;
-                            % Save Starship Data
+                            
+                            % Save Converged Starship and Superheavy Data
 							Vehicle.Chart(VehicleNo, :) = [Wpay(a), hleo(d), v_sep(e), SSi.tau, SHi.tau, SSi.TOGW, SSi.Spln, SSi.WR, SSi.Swet,SSi.Kw,SSi.TW0, SSi.OEW, SSi.OWEw, SSi.OWEv, SHi.TOGW, SHi.Spln, SHi.WR, SHi.Swet,SHi.Kw,SHi.TW0, SHi.OEW, SHi.OWEw, SHi.OWEv]	;
 							Vehicle.SS(VehicleNo) = SSi;
 							Vehicle.SH(VehicleNo) = SHi;
-							%% Puts data in to table thats easier to read
-							% Define the column names
+
+							% Puts data in to table thats easier to read
+							% Define the table column names
 							columnNames = {'Wpay', 'hleo', 'v_sep', 'SSi_tau', 'SHi_tau', ...
                							'SSi_TOGW', 'SSi_Spln', 'SSi_WR', 'SSi_Swet', 'SSi_Kw', ...
                							'SSi_TW0', 'SSi_OEW', 'SSi_OWEw', 'SSi_OWEv', ...
@@ -276,6 +280,12 @@ for a = 1: 1: length(Wpay)
 end
 
 %% Plots
+
+% Plot Properties
+P.Color = 'Black';
+
+% [kg, m^2] Plot OEW vs Planform Area
+Plot_Spln_vs_OEW(VehicleChartTable.SSi_Spln, VehicleChartTable.SSi_OEW, P);
 
 %% ~~~
 %}
