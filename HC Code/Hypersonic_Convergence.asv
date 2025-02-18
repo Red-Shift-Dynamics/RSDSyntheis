@@ -200,8 +200,8 @@ for a = 1: 1: length(Wpay)
                 
                 % Mission Parameters
                 MTV.Wpay  = Wpay(a);
-                MTV.Ncrew = Ncrew;
-                MTV.kcrew = kcrew;
+                MTV.Ncrew = Ncrew(b);
+                MTV.kcrew = kcrew(c);
                 MTV.hleo  = hleo(d);
                 MTV.v_sep = v_sep(e);
                 
