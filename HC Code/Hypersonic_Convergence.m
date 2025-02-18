@@ -185,7 +185,7 @@ options = optimoptions('lsqnonlin', ...
                 'display','off', ...        % Disable Text Displayed in Console
                 'TolFun', tol, ...          % Function Tolerance
                   'TolX', tol);             % Solution Tolerance
-
+VehicleNo = 0;
 % Iterate Through Payload Weight
 for a = 1: 1: length(Wpay)
 
@@ -222,8 +222,8 @@ for a = 1: 1: length(Wpay)
                 % Check SS ERROR
                 [ERROR_SS] = Solve_SS_OWE(C, MTV, SSi, x);
                 if ERROR_SS(1) > 0.001 || ERROR_SS(2) > 0.001
-                    % ERROR_SS
-                    % disp('SS FAIL') 
+                    ERROR_SS
+                    disp('SS FAIL') 
 
                 else
 
@@ -251,12 +251,21 @@ for a = 1: 1: length(Wpay)
                             % disp('SH FAIL')
 
                         else
-
+							VehicleNo = VehicleNo + 1;
                             % Save Starship Data
-                            Data.Wpay(a).hleo(d).v_sep(e).tau(i, f).SS = SSi;
-
-                            % Save Superheavy Data
-                            Data.Wpay(a).hleo(d).v_sep(e).tau(i, f).SH = SHi;
+							Vehicle.Chart(VehicleNo, :) = [Wpay(a), hleo(d), v_sep(e), SSi.tau, SHi.tau, SSi.TOGW, SSi.Spln, SSi.WR, SSi.Swet,SSi.Kw,SSi.TW0, SSi.OEW, SSi.OWEw, SSi.OWEv, SHi.TOGW, SHi.Spln, SHi.WR, SHi.Swet,SHi.Kw,SHi.TW0, SHi.OEW, SHi.OWEw, SHi.OWEv]	;
+							Vehicle.SS(VehicleNo) = SSi;
+							Vehicle.SH(VehicleNo) = SHi;
+							%% Puts data in to table thats easier to read
+							% Define the column names
+							columnNames = {'Wpay', 'hleo', 'v_sep', 'SSi_tau', 'SHi_tau', ...
+               							'SSi_TOGW', 'SSi_Spln', 'SSi_WR', 'SSi_Swet', 'SSi_Kw', ...
+               							'SSi_TW0', 'SSi_OEW', 'SSi_OWEw', 'SSi_OWEv', ...
+               							'SHi_TOGW', 'SHi_Spln', 'SHi_WR', 'SHi_Swet', 'SHi_Kw', ...
+               							'SHi_TW0', 'SHi_OEW', 'SHi_OWEw', 'SHi_OWEv'};
+							
+							% Convert the numeric array to a table
+							VehicleChartTable = array2table(Vehicle.Chart, 'VariableNames', columnNames);
 
                         end
                     end
