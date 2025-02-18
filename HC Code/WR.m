@@ -5,7 +5,7 @@ Authored By: Aayush Sudhakar
 
 This Function: 
 Calculates the weight ratios for each stage during launch with gravity adjusted ideal rocket eqution
-Assumes a 9000m/s required delta V for orbit
+Assumes a 9000m/s required delta V for orbit (with losses)
 
 
 Inputs:                                                         Units
