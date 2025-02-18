@@ -281,11 +281,16 @@ end
 
 %% Plots
 
+<<<<<<< Updated upstream
 % Plot Properties
 P.Color = 'Black';
 
 % [kg, m^2] Plot OEW vs Planform Area
 Plot_Spln_vs_OEW(VehicleChartTable.SSi_Spln, VehicleChartTable.SSi_OEW, P);
+=======
+% [kg, m^2] Plot OEW vs Planform Area
+Plot_Spln_vs_OEW(Spln, OEW, P);
+>>>>>>> Stashed changes
 
 %% ~~~
 %}
