@@ -4,125 +4,7 @@ clear all, clc, close all, format compact, format longG, tic;
 [C, SS, SH] = Constant_Parameters();
 
 %% Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-% Calculates Starship Weight and Volume Budgets
-function [SS] = Calculate_Starship_Budget(C, MTV, SS)
-    
-    % Weight Ratio - Starship
-    %[SS.WR] = Trajectory(MTV.hleo, SS.TOGW);
-    [SS] = Trajectory_SS(MTV, SS);
-    
-    % Wetted Area to Planform Area Ratio - Starship
-    %[SS.Kw] = Geometry(SS.tau, SS.Spln);
-    [SS] = Geometry_SS(SS);
-    
-    % T/W at Sea Level - Starship
-    %[SS.TW0] = Propulsion(SS.TOGW);
-    [SS] = Propulsion_SS(SS);
-    
-    % [kg] Starship Operating Empty Weight (Dry Weight)
-    SS.OEW = (SS.Istr*SS.Kw*SS.Spln + (SS.TW0)*SS.WR*(MTV.Wpay)/SS.E_TW + SS.Cun) / ...
-             (1/(1 + C.mua) - C.fsys - (SS.TW0)*SS.WR/SS.E_TW);
-    
-    % Weight and Vol Budgets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    % [kg] Starship Weight Budget
-    SS.OWEw = SS.OEW + MTV.Wpay;
-    
-    % [kg] Starship Volume Budget
-    SS.OWEv = (SS.tau*SS.Spln^1.5*(1 - SS.kvs - SS.kvv)- SS.Vun - MTV.Wpay/C.rho_pay) / ...
-              ((SS.WR - 1)/SS.rho_ppl + SS.kve*(SS.TW0)*SS.WR);
-
-    % Propellant Stuff ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    % [m^3] Propellant Volume
-    SS.Vppl = SS.OWEw*(SS.WR - 1) / SS.rho_ppl;
-    
-    % [kg] Propellant Weight
-    SS.Wppl = SS.Vppl * SS.rho_ppl;
-
-end
-
-% Function to Calculate Error for Solver - Starship
-function [ERROR] = Solve_SS_OWE(C, MTV, SS, x)
-
-    % [kg, m^2] Assign Variables
-    [SS.TOGW, SS.Spln] = deal(x(1), x(2));
-    
-    % Calculate Weight and Volume Budgets
-    [SS] = Calculate_Starship_Budget(C, MTV, SS);
-    
-    % [kg] OWE ERROR
-    OWE_ERROR = SS.OWEw - SS.OWEv;
-    ERROR(1, 1) = abs(OWE_ERROR);
-    
-    % [kg] Calculate TOGW - Starship
-    SS.TOGWnew = MTV.Wpay + SS.Wppl + SS.OEW;
-    
-    % [kg/m^2] TOGW ERROR
-    TOGW_Spln_ERROR = (SS.TOGWnew - SS.TOGW)/SS.Spln;
-    ERROR(2, 1) = abs(TOGW_Spln_ERROR);
-
-end
-
-% Calculates Superheavy Weight and Volume Budgets
-function [SH] = Calculate_Superheavy_Budget(C, MTV, SH, SS)
-    
-    % Weight Ratio - Superheavy
-    % [SH.WR] = Trajectory(MTV.v_sep, SH.TOGW, SS.TOGW)
-    [SH] = Trajectory_SH(MTV, SH, SS);
-    
-    % Wetted Area to Planform Area Ratio - Superheavy
-    % [SH.Kw] = Geometry(SH.tau, SH.Spln, SS.Swet)
-    [SH] = Geometry_SH(SH, SS);
-    
-    % T/W at Sea Level - Superheavy
-    % [SH.TW0] = Propulsion(SH.TOGW)
-    [SH] = Propulsion_SH(SH);
-    
-    % [kg] Superheavy Operating Empty Weight (Dry Weight)
-    SH.OEW = (SH.Istr*SH.Kw*SH.Spln + SH.Cun + C.ksup*(SS.TOGW)) / ...
-             (1/(1 + C.mua) - C.fsys - (SH.TW0)*SH.WR/SH.E_TW);
-    
-    % Weight and Vol Budgets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    % [kg] Superheavy Weight Budget
-    SH.OWEw = SH.OEW;
-    
-    % [kg] Superheavy Volume Budget
-    SH.OWEv = (SH.tau*SH.Spln^1.5*(1 - SH.kvs - SH.kvv) - SH.Vun - SS.TOGW*(SS.WR - 1)/SS.rho_ppl) / ...
-              ((SH.WR - 1)/SH.rho_ppl + SH.kve*(SH.TW0)*SH.WR);
-
-    % Propellant Stuff ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    % [m^3] Propellant Volume
-    SH.Vppl = SH.OWEw*(SH.WR - 1) / SH.rho_ppl;
-    
-    % [kg] Propellant Weight
-    SH.Wppl = SH.Vppl * SH.rho_ppl;
-
-end
-
-% Function to Calculate Error for Solver - Superheavy
-function [ERROR] = Solve_SH_OWE(C, MTV, SH, SS, x)
-
-    % [kg, m^2] Assign Variables
-    [SH.TOGW, SH.Spln] = deal(x(1), x(2));
-    
-    % Calculate Weight and Volume Budgets
-    [SH] = Calculate_Superheavy_Budget(C, MTV, SH, SS);
-    
-    % [kg] OWE ERROR
-    OWE_ERROR = SH.OWEw - SH.OWEv;
-    ERROR(1, 1) = abs(OWE_ERROR);
-    
-    % [kg] Calculate TOGW - Superheavy
-    SH.TOGWnew = SH.Wppl + SH.OEW;
-    
-    % [kg/m^2] TOGW ERROR
-    TOGW_Spln_ERROR = (SH.TOGWnew - SH.TOGW)/SH.Spln;
-    ERROR(2, 1) = abs(TOGW_Spln_ERROR);
-
-end
 
 %% Input Paramters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Create New Incriment Structure for Starship and Superheavy
@@ -260,10 +142,10 @@ for a = 1: 1: length(Wpay)
 							% Puts data in to table thats easier to read
 							% Define the table column names
 							columnNames = {'Wpay', 'hleo', 'v_sep', 'SSi_tau', 'SHi_tau', ...
-               							'SSi_TOGW', 'SSi_Spln', 'SSi_WR', 'SSi_Swet', 'SSi_Kw', ...
-               							'SSi_TW0', 'SSi_OEW', 'SSi_OWEw', 'SSi_OWEv', ...
-               							'SHi_TOGW', 'SHi_Spln', 'SHi_WR', 'SHi_Swet', 'SHi_Kw', ...
-               							'SHi_TW0', 'SHi_OEW', 'SHi_OWEw', 'SHi_OWEv'};
+               							'SSi_TOGW', 'SSi_Spln', 'SSi_WR',   'SSi_Swet', 'SSi_Kw', ...
+               							'SSi_TW0',  'SSi_OEW',  'SSi_OWEw', 'SSi_OWEv', ...
+               							'SHi_TOGW', 'SHi_Spln', 'SHi_WR',   'SHi_Swet', 'SHi_Kw', ...
+               							'SHi_TW0',  'SHi_OEW',  'SHi_OWEw', 'SHi_OWEv'};
 							
 							% Convert the numeric array to a table
 							VehicleChartTable = array2table(Vehicle.Chart, 'VariableNames', columnNames);
