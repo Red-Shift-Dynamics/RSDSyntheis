@@ -5,54 +5,50 @@ clear all, clc, close all, format compact, format longG, tic;
 
 %% Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
 %% Input Paramters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Create New Incriment Structure for Starship and Superheavy
-SSi = SS;   SHi = SH;
+SSi = SS;   SHi = SH;   VehicleNo = 0;
 
 % Mission Trade Variables (MTV) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % [MTon -> kg] Payload Weight
 Wpay = [100: 20: 150] * 1000;
-%Wpay = 100;
 
 % [#int] Crew Members
-%Ncrew = [1: 1: 15];
-Ncrew = 0;
+Ncrew = 0;          % WILL NEED TO REMOVE
 
 % [m^3/Person] Crew Specific Volume
-%kcrew = [10: 1: 14];
-kcrew = 0;
+kcrew = 0;          % WILL NEED OT REMOVE
 
 % [km] Low Earth Parking Orbit
-%hleo = [200: 50: 300];
-hleo = 200;
+hleo = 0;           % WILL NEED TO REMOVE
 
 % [m/s] Separation Velocity
-%v_sep = [100: 20: 200];
-v_sep = 100;
+v_sep = 1500;       % PROVIDE RANGE
  
 % Iterated Geometric Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Slenderness Parameter - Starship
-SS.tau = transpose([0.1: 0.1: 0.5]);
+%SS.tau = transpose([0.12: 0.02: 0.3]);
+SS.tau = transpose([0.1: 0.05: 0.3]);
 
 % Slenderness Parameter - Superheavy
-SH.tau = transpose([0.1: 0.1: 0.6]);
+%SH.tau = transpose([0.12: 0.02: 0.3]);
+SH.tau = SS.tau;
 
 % Inital Guessed Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % [MTon -> kg] Takeoff Gross Weight - Starship
-SS_TOGWi = 5000 * 1000;
+SS_TOGWi = 1700 * 1000;
 
 % [m^2] Planform Area - Starship
-SS_Splni = 500;
+SS_Splni = 550;
 
 % [MTon -> kg] Takeoff Gross Weight - Superheavy
-SH_TOGWi = 3000 * 1000;
+SH_TOGWi = 3800 * 1000;
 
 % [m^2] Planform Area - Superheavy
-SH_Splni = 100;
+SH_Splni = 650;
 
 %% The Meat and the Bones ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Initial Conditions
@@ -64,7 +60,7 @@ options = optimoptions('lsqnonlin', ...
                 'display','off', ...        % Disable Text Displayed in Console
                 'TolFun', tol, ...          % Function Tolerance
                   'TolX', tol);             % Solution Tolerance
-VehicleNo = 0;
+
 % Iterate Through Payload Weight
 for a = 1: 1: length(Wpay)
 
@@ -81,7 +77,7 @@ for a = 1: 1: length(Wpay)
                 MTV.Wpay  = Wpay(a);
                 MTV.Ncrew = Ncrew;
                 MTV.kcrew = kcrew;
-                MTV.hleo  = hleo(d);
+                MTV.hleo  = hleo;
                 MTV.v_sep = v_sep(e);
                 
                 % Starship ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -161,14 +157,24 @@ end
 %% Plots
 close all
 
-% Plot Properties
-P.Color = 'Black';
+% Checks for Converged Vehicle
+if VehicleNo == 0;
 
-% [kg, m^2] Plot OEW vs Planform Area
-Plot_Spln_vs_OEW(VehicleChartTable.SSi_Spln, VehicleChartTable.SSi_OEW, P);
+    % Print No Convergence
+    fprintf('No Converged Vehicles\n')
 
-% [kg, m^2] Plot OEW vs Planform Area
-Plot_Spln_vs_OEW(VehicleChartTable.SHi_Spln, VehicleChartTable.SHi_OEW, P);
+else
+    
+    % Plot Properties
+    P.Color = 'Black';
+    
+    % [kg, m^2] Plot OEW vs Planform Area
+    Plot_Spln_vs_OEW(VehicleChartTable.SSi_Spln, VehicleChartTable.SSi_OEW, P);
+    
+    % [kg, m^2] Plot OEW vs Planform Area
+    Plot_Spln_vs_OEW(VehicleChartTable.SHi_Spln, VehicleChartTable.SHi_OEW, P);
+
+end
 
 %% ~~~
 %}

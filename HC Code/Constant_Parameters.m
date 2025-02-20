@@ -1,7 +1,6 @@
 %% Constants For Both Vehicles
 function [C, SS, SH] = Constant_Parameters()
     
-
     % [(Ton -> kg)/Person] Crew Member Specific Weight
     %C.fcrew = 0.14 * 1000; %textbook value
 
@@ -74,8 +73,8 @@ function [C, SS, SH] = Constant_Parameters()
     % [m^3] Unmanned Systems Volume Coeff - Starship 
     SS.Vun = 5;
 
-    % [] Propellant Density - Starship      WRONG!!!!!!!
-    SS.rho_ppl = 541;
+    % [g/L = kg/m^3] Propellant Density - Starship      WRONG!!!!!!!
+    SS.rho_ppl = 892.84;
 
     % [m^3/(Ton -> kg)] Engine Volume Coeff - Starship
     SS.kve = 0.1 * 1000;
@@ -105,8 +104,8 @@ function [C, SS, SH] = Constant_Parameters()
     % [m^3] Unmanned Systems Volume Coeff - Superheavy
     SH.Vun = 5;
 
-    % [] Propellant Density - Superheavy     WRONG!!!!!!!
-    SH.rho_ppl = 541;
+    % [kg/m^3] Propellant Density - Superheavy
+    SH.rho_ppl = SS.rho_ppl;
 
     % [m^3/(Ton -> kg)] Engine Volume Coeff - Superheavy
     SH.kve = 0.1 * 1000;
