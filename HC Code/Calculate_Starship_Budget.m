@@ -2,8 +2,7 @@
 function [SS] = Calculate_Starship_Budget(C, MTV, SS)
     
     % Weight Ratio - Starship
-    %[SS.WR] = Trajectory(MTV.v_sep, SS.TOGW);
-    [SS] = Trajectory_SS(MTV, SS);
+    [SS.WR, SS.ff, SS.Wppl] = WR_SS(SS, MTV.v_sep);
     
     % Wetted Area to Planform Area Ratio - Starship
     %[SS.Kw] = Geometry(SS.tau, SS.Spln);
