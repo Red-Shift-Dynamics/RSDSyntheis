@@ -2,8 +2,7 @@
 function [SH] = Calculate_Superheavy_Budget(C, MTV, SH, SS)
     
     % Weight Ratio - Superheavy
-    % [SH.WR] = Trajectory(MTV.v_sep, SH.TOGW, SS.TOGW)
-    [SH] = Trajectory_SH(MTV, SH, SS);
+    [SH.WR, SH.ff, SH.Wppl] = WR_SH(SH, SS, MTV.v_sep);
     
     % Wetted Area to Planform Area Ratio - Superheavy
     % [SH.Kw] = Geometry(SH.tau, SH.Spln, SS.Swet)
