@@ -109,7 +109,17 @@ function [C, SS, SH] = Constant_Parameters()
 
     % [m^3/(Ton -> kg)] Engine Volume Coeff - Superheavy
     SH.kve = 0.1 * 1000;
-
+    
+    % Propulsion Parameters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    % [s]Raptor 2 ISP at Sea Level
+    SH.IspSL = 347;
+    
+    % [s]Raptor 2 ISP in Vacuum
+    SH.IspVAC = 356;
+    
+    % [s]Specific impulse of Vacuum optimized Raptor at Vacuum
+    SS.IspRVAC = 380;
 end
 
 %% ~~~
