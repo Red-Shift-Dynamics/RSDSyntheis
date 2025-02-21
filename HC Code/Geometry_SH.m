@@ -4,7 +4,8 @@ function [SH] = Geometry_SH(SH, SS)
 
     % Wetted to Planform Area Ratio - Superheavy
     %SH.Kw = (SH.Swet + SS.Swet)/SH.Spln;
-    SH.Kw = -56.368 * (SH.tau^2) + 23.374 * SH.tau + 1.0887;
+    %SH.Kw = -56.368 * (SH.tau^2) + 23.374 * SH.tau + 1.0887;
+    SH.Kw=pi;
 
     % [m^2] Wetted Area - Superheavy
     SH.Swet = (SH.Kw * SH.Spln) - SS.Swet;

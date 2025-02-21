@@ -44,7 +44,7 @@ function [C, SS, SH] = Constant_Parameters()
 
 
     % [kg/m^2] Structural Index - Starship 
-    SS.Istr = 17;
+    SS.Istr = 36;
 
     % Engine Thrust to Weight - Starship 
     SS.E_TW = 141.1042945;
@@ -74,15 +74,16 @@ function [C, SS, SH] = Constant_Parameters()
     SS.Vun = 5;
 
     % [g/L = kg/m^3] Propellant Density - Starship
-    SS.rho_ppl = 892.84;
+    %  ORIGINAL VALUE SS.rho_ppl = 892.84;
+    SS.rho_ppl = 2000;
 
     % [m^3/(Ton -> kg)] Engine Volume Coeff - Starship
-    SS.kve = 0.05 * 1000;
+    SS.kve = 0.05 / 1000;
 
     % Superheavy Constant Parameters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     % [kg/m^2] Structural Index - Superheavy
-    SH.Istr = 17;
+    SH.Istr = 40;
 
     % Engine Thrust to Weight - Superheavy 
     SH.E_TW = SS.E_TW;
@@ -108,7 +109,7 @@ function [C, SS, SH] = Constant_Parameters()
     SH.rho_ppl = SS.rho_ppl;
 
     % [m^3/(Ton -> kg)] Engine Volume Coeff - Superheavy
-    SH.kve = 0.05 * 1000;
+    SH.kve = 0.05 / 1000;
     
     % Propulsion Parameters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     

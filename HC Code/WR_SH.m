@@ -51,8 +51,8 @@ function SH = WR_SH(SH, SS, Vsep)
     % [kg]Mass of the SH propellant used in the burn (does not account for fuel required 
     % to land)
 
-    m_ppl = m_ppl_launch + 400*1000;
-    % [kg]Mass of total SH propellant. Includes estimated 400 tons for landing burn
+    m_ppl = m_ppl_launch + .1*TOGW_SH;
+    % [kg]Mass of total SH propellant. Includes estimated 10% of TOGW for landing burn
 
     WR = TOGW_SH / (TOGW_SH - m_ppl);
     % []Weight Ratio of SH 
