@@ -6,7 +6,7 @@ function [SS] = Propulsion(SS)
     SS.N_eng = 6;
 
     % [MTon -> kg] Sea Level Thrust - Starship
-    SS.T0 = 258 * 1000 * SS.N_eng * 100000000;
+    SS.T0 = 258 * 1000 * SS.N_eng;
 
     % Sea Level Thrust to Weight Ratio - Starship
     SS.TW0 = SS.T0 / SS.TOGW;

@@ -73,7 +73,7 @@ function [C, SS, SH] = Constant_Parameters()
     % [m^3] Unmanned Systems Volume Coeff - Starship 
     SS.Vun = 5;
 
-    % [g/L = kg/m^3] Propellant Density - Starship      WRONG!!!!!!!
+    % [g/L = kg/m^3] Propellant Density - Starship
     SS.rho_ppl = 892.84;
 
     % [m^3/(Ton -> kg)] Engine Volume Coeff - Starship

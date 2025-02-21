@@ -31,8 +31,8 @@ v_sep = 1500;       % PROVIDE RANGE
 
 % Slenderness Parameter - Starship
 %SS.tau = transpose([0.12: 0.02: 0.3]);
-%SS.tau = transpose([0.1: 0.05: 0.3]);
-SS.tau = 0.1;
+SS.tau = transpose([0.1: 0.05: 0.3]);
+%SS.tau = 0.1;
 
 % Slenderness Parameter - Superheavy
 %SH.tau = transpose([0.12: 0.02: 0.3]);
@@ -45,7 +45,7 @@ SH.tau = SS.tau;
 SS_TOGWi = 500 * 1000;
 
 % [m^2] Planform Area - Starship
-SS_Splni = 400;
+SS_Splni = 550;
 
 % [MTon -> kg] Takeoff Gross Weight - Superheavy
 %SH_TOGWi = 3800 * 1000;
@@ -59,7 +59,7 @@ SH_Splni = 650;
 x0 = [SS_TOGWi; SS_Splni];
 
 % Set Optimization Options
-tol = 1e-5;                                % Solver Tolerance           
+tol = 1e-15;                                % Solver Tolerance           
 options = optimoptions('lsqnonlin', ...
                 'display','off', ...        % Disable Text Displayed in Console
                 'TolFun', tol, ...          % Function Tolerance
@@ -99,7 +99,7 @@ for a = 1: 1: length(Wpay)
                 [SSi] = Calculate_Starship_Budget(C, MTV, SSi);
                 
                 % Check SS ERROR
-                [ERROR_SS] = Solve_SS_OWE(C, MTV, SSi, x)
+                [ERROR_SS] = Solve_SS_OWE(C, MTV, SSi, x);
                 if ERROR_SS(1) > 0.001 || ERROR_SS(2) > 0.001
                     ERROR_SS
                     disp('SS FAIL')
@@ -126,14 +126,15 @@ for a = 1: 1: length(Wpay)
                         % Check SH ERROR
                         [ERROR_SH] = Solve_SH_OWE(C, MTV, SHi, SSi, y);
                         if ERROR_SH(1) > 0.001 || ERROR_SH(2) > 0.001
-                            % ERROR_SH
-                            % disp('SH FAIL')
+                            ERROR_SH
+                            disp('SH FAIL')
 
                         else
 
                             % [int#] Creates Vehicle Counter
 							VehicleNo = VehicleNo + 1;
                             
+                            SHi.Swet
                             % Save Converged Starship and Superheavy Data
                             Vehicle.Chart(VehicleNo, :) = [Wpay(a), hleo, v_sep(e), SSi.tau, SHi.tau, SSi.TOGW, SSi.Spln, SSi.WR, SSi.Swet, SSi.Kw, SSi.TW0, SSi.OEW, SSi.OWEw, SSi.OWEv, SHi.TOGW, SHi.Spln, SHi.WR, SHi.Swet, SHi.Kw, SHi.TW0, SHi.OEW, SHi.OWEw, SHi.OWEv];
                             Vehicle.SS(VehicleNo) = SSi;

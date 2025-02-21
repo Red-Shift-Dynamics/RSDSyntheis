@@ -6,7 +6,7 @@ function [SH] = Propulsion(SH)
     SH.N_eng = 33;
 
     % [MTon -> kg] Sea Level Thrust - Superheavy
-    SH.T0 = 230 * 1000 * SH.N_eng * 100000000;
+    SH.T0 = 230 * 1000 * SH.N_eng;
 
     % Sea Level Thrust to Weight Ratio - Superheavy
     SH.TW0 = SH.T0 / SH.TOGW;
