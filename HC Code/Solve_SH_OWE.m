@@ -17,5 +17,5 @@ function [ERROR] = Solve_SH_OWE(C, MTV, SH, SS, x)
     % [kg/m^2] TOGW ERROR
     TOGW_Spln_ERROR = (SH.TOGWnew - SH.TOGW)/SH.Spln;
     ERROR(2, 1) = abs(TOGW_Spln_ERROR);
-
+    
 end

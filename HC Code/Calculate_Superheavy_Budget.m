@@ -34,4 +34,7 @@ function [SH] = Calculate_Superheavy_Budget(C, MTV, SH, SS)
     % [kg] Propellant Weight
     SH.mppl = SH.Vppl * SH.rho_ppl;
 
+    Weight = SH.OWEw
+    Volume = SH.OWEv
+
 end
