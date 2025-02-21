@@ -13,7 +13,7 @@ SSi = SS;   SHi = SH;   VehicleNo = 0;
 
 % [MTon -> kg] Payload Weight
 %Wpay = [100: 20: 150] * 1000;
-Wpay = 0;
+Wpay = 50;
 
 % [#int] Crew Members
 Ncrew = 0;          % WILL NEED TO REMOVE
@@ -30,33 +30,35 @@ v_sep = 1500;       % PROVIDE RANGE
 % Iterated Geometric Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Slenderness Parameter - Starship
-%SS.tau = transpose([0.12: 0.02: 0.3]);
+SS.tau = transpose([0.12: 0.02: 0.3]);
 %SS.tau = transpose([0.1: 0.05: 0.3]);
-SS.tau = 0.1;
+%SS.tau = 0.22;
 
 % Slenderness Parameter - Superheavy
-%SH.tau = transpose([0.12: 0.02: 0.3]);
-SH.tau = SS.tau;
+SH.tau = transpose([0.12: 0.02: 0.3]);
+%SH.tau = .27;
 
 % Inital Guessed Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % [MTon -> kg] Takeoff Gross Weight - Starship
-%SS_TOGWi = 1700 * 1000;
-SS_TOGWi = 500 * 1000;
+SS_TOGWi = 1700 * 1000;
+%SS_TOGWi = 500 * 1000;
 
 % [m^2] Planform Area - Starship
-SS_Splni = 400;
+SS_Splni = 550;
 
 % [MTon -> kg] Takeoff Gross Weight - Superheavy
-%SH_TOGWi = 3800 * 1000;
-SH_TOGWi = 500 * 1000;
+SH_TOGWi = 3800 * 1000;
+%SH_TOGWi = 500 * 1000;
 
 % [m^2] Planform Area - Superheavy
 SH_Splni = 650;
 
 %% The Meat and the Bones ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Initial Conditions
-x0 = [SS_TOGWi; SS_Splni];
+x0_SS = [SS_TOGWi; SS_Splni];
+x0_SH = [SH_TOGWi; SH_Splni];
+
 
 % Set Optimization Options
 tol = 1e-5;                                % Solver Tolerance           
@@ -90,7 +92,7 @@ for a = 1: 1: length(Wpay)
                 SSi.tau = SS.tau(i);
 
                 % [kg, m^2] Solve Starship TOGW and Planform Area
-                [x] = lsqnonlin(@(x) Solve_SS_OWE(C, MTV, SSi, x), x0, [], [], options);
+                [x] = lsqnonlin(@(x) Solve_SS_OWE(C, MTV, SSi, x), x0_SS, [], [], options);
                 
                 % [kg, m^2] Deal Solved Output Vector
                 [SSi.TOGW, SSi.Spln] = deal(x(1), x(2));
@@ -99,7 +101,7 @@ for a = 1: 1: length(Wpay)
                 [SSi] = Calculate_Starship_Budget(C, MTV, SSi);
                 
                 % Check SS ERROR
-                [ERROR_SS] = Solve_SS_OWE(C, MTV, SSi, x)
+                [ERROR_SS] = Solve_SS_OWE(C, MTV, SSi, x);
                 if ERROR_SS(1) > 0.001 || ERROR_SS(2) > 0.001
                     ERROR_SS
                     disp('SS FAIL')
@@ -113,7 +115,7 @@ for a = 1: 1: length(Wpay)
                         SHi.tau = SH.tau(f);
     
                         % [kg, m^2] Solve Superheavy TOGW and Planform Area
-                        [y] = lsqnonlin(@(x) Solve_SH_OWE(C, MTV, SHi, SSi, x), x0, [], [], options);
+                        [y] = lsqnonlin(@(x) Solve_SH_OWE(C, MTV, SHi, SSi, x), x0_SH, [], [], options);
                         
                         % [kg, m^2] Deal Solved Output Vector
                         [SHi.TOGW, SHi.Spln] = deal(y(1), y(2));
@@ -126,8 +128,8 @@ for a = 1: 1: length(Wpay)
                         % Check SH ERROR
                         [ERROR_SH] = Solve_SH_OWE(C, MTV, SHi, SSi, y);
                         if ERROR_SH(1) > 0.001 || ERROR_SH(2) > 0.001
-                            % ERROR_SH
-                            % disp('SH FAIL')
+                            ERROR_SH
+                            disp('SH FAIL')
 
                         else
 
