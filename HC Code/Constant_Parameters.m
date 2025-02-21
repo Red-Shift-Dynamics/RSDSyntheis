@@ -47,7 +47,7 @@ function [C, SS, SH] = Constant_Parameters()
     SS.Istr = 17;
 
     % Engine Thrust to Weight - Starship 
-    SS.E_TW = 100;
+    SS.E_TW = 141.1042945;
     
 
     % [Ton -> kg] Constant Unmammed Systems Weight - Starship 
@@ -77,7 +77,7 @@ function [C, SS, SH] = Constant_Parameters()
     SS.rho_ppl = 892.84;
 
     % [m^3/(Ton -> kg)] Engine Volume Coeff - Starship
-    SS.kve = 0.1 * 1000;
+    SS.kve = 0.05 * 1000;
 
     % Superheavy Constant Parameters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
@@ -85,7 +85,7 @@ function [C, SS, SH] = Constant_Parameters()
     SH.Istr = 17;
 
     % Engine Thrust to Weight - Superheavy 
-    SH.E_TW = 100;
+    SH.E_TW = SS.E_TW;
     
 
     % [Ton -> kg] Constant Unmammed Systems Weight - Superheavy
@@ -108,7 +108,7 @@ function [C, SS, SH] = Constant_Parameters()
     SH.rho_ppl = SS.rho_ppl;
 
     % [m^3/(Ton -> kg)] Engine Volume Coeff - Superheavy
-    SH.kve = 0.1 * 1000;
+    SH.kve = 0.05 * 1000;
     
     % Propulsion Parameters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     

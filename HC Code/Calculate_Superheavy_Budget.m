@@ -1,8 +1,9 @@
 %% Calculates Superheavy Weight and Volume Budgets
 function [SH] = Calculate_Superheavy_Budget(C, MTV, SH, SS)
     
-    % Weight Ratio - Superheavy
-    [SH.WR, SH.ff, SH.Wppl] = WR_SH(SH, SS, MTV.v_sep);
+    % Weight Ratio - Superheavy'
+    % [SH.WR, SH.ff, SH.Wppl]
+    [SH] = WR_SH(SH, SS, MTV.v_sep);
     
     % Wetted Area to Planform Area Ratio - Superheavy
     % [SH.Kw] = Geometry(SH.tau, SH.Spln, SS.Swet)
@@ -31,6 +32,6 @@ function [SH] = Calculate_Superheavy_Budget(C, MTV, SH, SS)
     SH.Vppl = SH.OWEw*(SH.WR - 1) / SH.rho_ppl;
     
     % [kg] Propellant Weight
-    SH.Wppl = SH.Vppl * SH.rho_ppl;
+    SH.mppl = SH.Vppl * SH.rho_ppl;
 
 end

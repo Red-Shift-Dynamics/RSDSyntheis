@@ -1,11 +1,14 @@
-%% T/W at Sea Level - Starship
+%% T/W at Sea Level - Superheavy
 % [SH.TW0] = Propulsion(SH.TOGW)
 function [SH] = Propulsion(SH)
     
-    % [MTon -> kg] Sea Level Thrust
-    SH.T0 = 100000000;
+    % [int#] Engines - Superheavy
+    SH.N_eng = 33;
 
-    % Sea Level Thrust to Weight Ratio - Starship
+    % [MTon -> kg] Sea Level Thrust - Superheavy
+    SH.T0 = 230 * 1000 * SH.N_eng * 100000000;
+
+    % Sea Level Thrust to Weight Ratio - Superheavy
     SH.TW0 = SH.T0 / SH.TOGW;
 
 end

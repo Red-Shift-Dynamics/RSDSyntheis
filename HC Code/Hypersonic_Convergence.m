@@ -12,7 +12,8 @@ SSi = SS;   SHi = SH;   VehicleNo = 0;
 % Mission Trade Variables (MTV) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % [MTon -> kg] Payload Weight
-Wpay = [100: 20: 150] * 1000;
+%Wpay = [100: 20: 150] * 1000;
+Wpay = 0;
 
 % [#int] Crew Members
 Ncrew = 0;          % WILL NEED TO REMOVE
@@ -30,7 +31,8 @@ v_sep = 1500;       % PROVIDE RANGE
 
 % Slenderness Parameter - Starship
 %SS.tau = transpose([0.12: 0.02: 0.3]);
-SS.tau = transpose([0.1: 0.05: 0.3]);
+%SS.tau = transpose([0.1: 0.05: 0.3]);
+SS.tau = 0.1;
 
 % Slenderness Parameter - Superheavy
 %SH.tau = transpose([0.12: 0.02: 0.3]);
@@ -55,7 +57,7 @@ SH_Splni = 650;
 x0 = [SS_TOGWi; SS_Splni];
 
 % Set Optimization Options
-tol = 1e-5;                                % Solver Tolerance           
+tol = 1e-15;                                % Solver Tolerance           
 options = optimoptions('lsqnonlin', ...
                 'display','off', ...        % Disable Text Displayed in Console
                 'TolFun', tol, ...          % Function Tolerance
@@ -97,8 +99,8 @@ for a = 1: 1: length(Wpay)
                 % Check SS ERROR
                 [ERROR_SS] = Solve_SS_OWE(C, MTV, SSi, x);
                 if ERROR_SS(1) > 0.001 || ERROR_SS(2) > 0.001
-                    % ERROR_SS
-                    % disp('SS FAIL') 
+                    ERROR_SS
+                    disp('SS FAIL')
 
                 else
 
@@ -131,10 +133,10 @@ for a = 1: 1: length(Wpay)
 							VehicleNo = VehicleNo + 1;
                             
                             % Save Converged Starship and Superheavy Data
-							Vehicle.Chart(VehicleNo, :) = [Wpay(a), hleo(d), v_sep(e), SSi.tau, SHi.tau, SSi.TOGW, SSi.Spln, SSi.WR, SSi.Swet,SSi.Kw,SSi.TW0, SSi.OEW, SSi.OWEw, SSi.OWEv, SHi.TOGW, SHi.Spln, SHi.WR, SHi.Swet,SHi.Kw,SHi.TW0, SHi.OEW, SHi.OWEw, SHi.OWEv]	;
-							Vehicle.SS(VehicleNo) = SSi;
+							Vehicle.Chart(VehicleNo, :) = [Wpay(a), hleo, v_sep(e), SSi.tau, SHi.tau, SSi.TOGW, SSi.Spln, SSi.WR, SSi.Swet, SSi.Kw, SSi.TW0, SSi.OEW, SSi.OWEw, SSi.OWEv, SHi.TOGW, SHi.Spln, SHi.WR, SHi.Swet, SHi.Kw, SHi.TW0, SHi.OEW, SHi.OWEw, SHi.OWEv];
+                            Vehicle.SS(VehicleNo) = SSi;
 							Vehicle.SH(VehicleNo) = SHi;
-
+                            
 							% Puts data in to table thats easier to read
 							% Define the table column names
 							columnNames = {'Wpay', 'hleo', 'v_sep', 'SSi_tau', 'SHi_tau', ...
