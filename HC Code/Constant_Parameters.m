@@ -30,6 +30,7 @@ function [C, SS, SH] = Constant_Parameters()
 
     % [(ton -> kg)/m^3] Payload Density
     C.rho_pay = (100 * 1000) / 664.0246163; 
+    %C.rho_pay = (15 * 1000) / 664.0246163; 
 
     % Support Weight Coeff - Superheavy
     C.ksup = 0.05;
@@ -37,8 +38,9 @@ function [C, SS, SH] = Constant_Parameters()
     % Starship Constant Parameters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     % % [kg/m^2] Structural Index - Starship 
-    %SS.Istr = 36;      % ~ GUESSED VALUE ~ 
-    SS.Istr = 25.17;
+    %SS.Istr = 33;      % ~ GUESSED VALUE ~ 
+    %SS.Istr = 25.17;
+    SS.Istr = 28.3008;  % ~ FROM JASON ~
 
     % Engine Thrust to Weight - Starship 
     SS.E_TW = 141.1042945;
@@ -73,8 +75,9 @@ function [C, SS, SH] = Constant_Parameters()
     % Superheavy Constant Parameters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     % [kg/m^2] Structural Index - Superheavy
-    SH.Istr = 40;      % ~ GUESSED VALUE ~ 
+    %SH.Istr = 40;      % ~ GUESSED VALUE ~ 
     %SH.Istr = 148.7;
+    SH.Istr = 80;
 
     % Engine Thrust to Weight - Superheavy 
     SH.E_TW = 91.54785723;
@@ -115,7 +118,7 @@ function [C, SS, SH] = Constant_Parameters()
     SS.ET0 = 258 * 1000;
     
     % [int#] # Engines - Starship
-    SS.N_eng = 6;
+    SS.N_eng = 9;
 
     % [Mton -> kg] Sealevel Thrust - Superheavy
     SH.ET0 = 230 * 1000;

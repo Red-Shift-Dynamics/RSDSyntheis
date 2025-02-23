@@ -30,7 +30,7 @@ function SS = WR_SS(SS, Vsep)
     g = 9.80665;
     % [m/s^2]Earth acceleration due to gravity
 
-    dVLaunch = 9000 - Vsep + 150 * g;
+    dVLaunch = 9000 - (Vsep + 150 * g);
     % [m/s]Required Delta v for remainder of launch
 
     dVTotal = dVLaunch + 1000;

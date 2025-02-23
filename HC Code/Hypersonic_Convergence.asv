@@ -20,13 +20,13 @@ v_sep = [1400: 100: 2500];       % PROVIDE RANGE
 % Iterated Geometric Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Slenderness Parameter - Starship
-SS.tau = transpose([0.16: 0.02: 0.26]);
-%SS.tau = 0.23;
+SS.tau = transpose([0.16: 0.02: 0.24]);
+%SS.tau = 0.22;
 
 % Slenderness Parameter - Superheavy
 %SH.tau = transpose([0.4: 0.02: 0.6]);
 %SH.tau = SS.tau;
-SH.tau = .48;
+%SH.tau = .48;
 
 % Inital Guessed Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -208,14 +208,6 @@ else
 
     % [kg, m^2] Plot OEW vs Planform Area - Starship
     Plot_Spln_vs_OEW(VehicleData.SSi_Spln, VehicleData.SSi_OEW, VehicleData.SSi_tau, VehicleNo, P);
-
-    % Plot Properties - Starship
-    P.Title = 'Starship TOGW vs Planform Area';
-    P.x_Tick_I = 50;
-    P.y_Tick_I = 100000;
-
-    % [kg, m^2] Plot TOGW vs Planform Area - Starship
-    Plot_Spln_vs_TOGW(VehicleData.SSi_Spln, VehicleData.SSi_TOGW, VehicleData.SSi_tau, VehicleNo, P)
 
     % Plot Properties - Superheavy
     P.Title = 'Superheavy OEW vs Planform Area';

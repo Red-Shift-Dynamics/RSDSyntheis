@@ -11,10 +11,10 @@ function [SH] = Calculate_Superheavy_Budget(C, MTV, SH, SS)
     
     % T/W at Sea Level - Superheavy
     % [SH.TW0] = Propulsion(SH.TOGW)
-    [SH] = Propulsion_SH(SH);
+    [SH] = Propulsion_SH(SH,SS);
     
     % [kg] Superheavy Operating Empty Weight (Dry Weight)
-    SH.OEW = (SH.Istr*SH.Kw*SH.Spln + SH.Cun + C.ksup*(SS.TOGW)) / ...
+    SH.OEW = (SH.Istr*SH.Kw*SH.Spln + (SH.TW0)*SH.WR/SH.E_TW * MTV.Wpay + SH.Cun + C.ksup*(SS.TOGW)) / ...
              (1/(1 + C.mua) - C.fsys - (SH.TW0)*SH.WR/SH.E_TW);
     
     % Weight and Vol Budgets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,7 +23,7 @@ function [SH] = Calculate_Superheavy_Budget(C, MTV, SH, SS)
     SH.OWEw = SH.OEW;
     
     % [kg] Superheavy Volume Budget
-    SH.OWEv = (SH.tau*SH.Spln^1.5*(1 - SH.kvs - SH.kvv) - SH.Vun - SS.TOGW*(SS.WR - 1)/SS.rho_ppl) / ...
+    SH.OWEv = (SH.tau*SH.Spln^1.5*(1 - SH.kvs - SH.kvv) - SH.Vun - MTV.Wpay/C.rho_pay - SS.TOGW*(SS.WR - 1)/SS.rho_ppl) / ...
               ((SH.WR - 1)/SH.rho_ppl + SH.kve*(SH.TW0)*SH.WR);
 
     % Propellant Stuff ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
