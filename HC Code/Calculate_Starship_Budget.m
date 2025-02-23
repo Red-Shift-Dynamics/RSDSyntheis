@@ -26,8 +26,6 @@ function [SS] = Calculate_Starship_Budget(C, MTV, SS)
     SS.OWEv = (SS.tau*SS.Spln^1.5*(1 - SS.kvs - SS.kvv)- SS.Vun - MTV.Wpay/C.rho_pay) / ...
               ((SS.WR - 1)/SS.rho_ppl + SS.kve*(SS.TW0)*SS.WR);
 
-    SS_TW0 = SS.TW0
-
     % Propellant Stuff ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     % [m^3] Propellant Volume
@@ -35,7 +33,5 @@ function [SS] = Calculate_Starship_Budget(C, MTV, SS)
 
     % [kg] Propellant Weight
     SS.mppl = SS.Vppl * SS.rho_ppl;
-
-    SS_WR = SS.WR
 
 end

@@ -3,8 +3,6 @@ clear all, clc, close all, format compact, format longG, tic;
 % Constant Parameters
 [C, SS, SH] = Constant_Parameters();
 
-%% Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 %% Input Paramters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Create New Incriment Structure for Starship and Superheavy
 SSi = SS;   SHi = SH;   VehicleNo = 0;
@@ -12,44 +10,34 @@ SSi = SS;   SHi = SH;   VehicleNo = 0;
 % Mission Trade Variables (MTV) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % [MTon -> kg] Payload Weight
-%Wpay = [100: 20: 150] * 1000;
-Wpay = 50;
-
-% [#int] Crew Members
-Ncrew = 0;          % WILL NEED TO REMOVE
-
-% [m^3/Person] Crew Specific Volume
-kcrew = 0;          % WILL NEED OT REMOVE
-
-% [km] Low Earth Parking Orbit
-hleo = 0;           % WILL NEED TO REMOVE
+Wpay = [50: 50: 150] * 1000;
+%Wpay = 100;
 
 % [m/s] Separation Velocity
-v_sep = 1500;       % PROVIDE RANGE
- 
+%v_sep = [1400: 100: 1600];       % PROVIDE RANGE
+v_sep = 1500;
+
 % Iterated Geometric Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Slenderness Parameter - Starship
-SS.tau = transpose([0.12: 0.02: 0.3]);
-%SS.tau = transpose([0.1: 0.05: 0.3]);
+SS.tau = transpose([0.1: 0.02: 0.3]);
 %SS.tau = 0.22;
 
 % Slenderness Parameter - Superheavy
-SH.tau = transpose([0.12: 0.02: 0.3]);
+%SH.tau = transpose([0.1: 0.02: 0.3]);
+SH.tau = SS.tau;
 %SH.tau = .27;
 
 % Inital Guessed Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % [MTon -> kg] Takeoff Gross Weight - Starship
 SS_TOGWi = 1700 * 1000;
-%SS_TOGWi = 500 * 1000;
 
 % [m^2] Planform Area - Starship
 SS_Splni = 550;
 
 % [MTon -> kg] Takeoff Gross Weight - Superheavy
 SH_TOGWi = 3800 * 1000;
-%SH_TOGWi = 500 * 1000;
 
 % [m^2] Planform Area - Superheavy
 SH_Splni = 650;
@@ -59,9 +47,8 @@ SH_Splni = 650;
 x0_SS = [SS_TOGWi; SS_Splni];
 x0_SH = [SH_TOGWi; SH_Splni];
 
-
 % Set Optimization Options
-tol = 1e-5;                                % Solver Tolerance           
+tol = 1e-5;                                 % Solver Tolerance           
 options = optimoptions('lsqnonlin', ...
                 'display','off', ...        % Disable Text Displayed in Console
                 'TolFun', tol, ...          % Function Tolerance
@@ -70,89 +57,123 @@ options = optimoptions('lsqnonlin', ...
 % Iterate Through Payload Weight
 for a = 1: 1: length(Wpay)
 
-    % Iterate Through LEO
-    for d = 1: 1: length(hleo)
+    % Iterate Through Separation Velocity
+    for e = 1: 1: length(v_sep)
 
-        % Iterate Through Separation Velocity
-        for e = 1: 1: length(v_sep)
+        % Iterate Through Starship tau Values
+        for i = 1: 1: length(SS.tau)
+            
+            % Mission Parameters
+            MTV.Wpay  = Wpay(a);
+            MTV.v_sep = v_sep(e);
+            
+            % Starship ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-            % Iterate Through Starship tau Values
-            for i = 1: 1: length(SS.tau)
+            % Starship Slenderness Parameter
+            SSi.tau = SS.tau(i);
+
+            % [kg, m^2] Solve Starship TOGW and Planform Area
+            [x] = lsqnonlin(@(x) Solve_SS_OWE(C, MTV, SSi, x), x0_SS, [], [], options);
+            
+            % [kg, m^2] Deal Solved Output Vector
+            [SSi.TOGW, SSi.Spln] = deal(x(1), x(2));
+            
+            % Calculate Starship Converged Parameters
+            [SSi] = Calculate_Starship_Budget(C, MTV, SSi);
+            
+            % Check SS ERROR
+            [ERROR_SS] = Solve_SS_OWE(C, MTV, SSi, x);
+            if ERROR_SS(1) > 0.001 || ERROR_SS(2) > 0.001
+
+                % ERROR_SS
+                % disp('SS FAIL')
+
+            elseif SSi.OEW < 10
                 
-                % Mission Parameters
-                MTV.Wpay  = Wpay(a);
-                MTV.Ncrew = Ncrew;
-                MTV.kcrew = kcrew;
-                MTV.hleo  = hleo;
-                MTV.v_sep = v_sep(e);
+                % disp('Bad SS Converge')
+                % SSi_OEW = SSi.OEW
+
+            elseif 3000 < SSi.TOGW / 1000
                 
-                % Starship ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                disp('3000 MTon < SS.TOGW')
+                SS_TOGW = SSi.TOGW / 1000
 
-                % Starship Slenderness Parameter
-                SSi.tau = SS.tau(i);
+            else
 
-                % [kg, m^2] Solve Starship TOGW and Planform Area
-                [x] = lsqnonlin(@(x) Solve_SS_OWE(C, MTV, SSi, x), x0_SS, [], [], options);
-                
-                % [kg, m^2] Deal Solved Output Vector
-                [SSi.TOGW, SSi.Spln] = deal(x(1), x(2));
-                 
-                % Calculate Starship Converged Parameters
-                [SSi] = Calculate_Starship_Budget(C, MTV, SSi);
-                
-                % Check SS ERROR
-                [ERROR_SS] = Solve_SS_OWE(C, MTV, SSi, x);
-                if ERROR_SS(1) > 0.001 || ERROR_SS(2) > 0.001
-                    ERROR_SS
-                    disp('SS FAIL')
+                % Iterate Through Superheavy tau Values
+                for f = 1: 1: length(SH.tau)
+                    
+                    % Superheavy Slenderness Parameter
+                    SHi.tau = SH.tau(f);
 
-                else
-
-                    % Iterate Through Superheavy tau Values
-                    for f = 1: 1: length(SH.tau)
-                        
-                        % Superheavy Slenderness Parameter
-                        SHi.tau = SH.tau(f);
-    
-                        % [kg, m^2] Solve Superheavy TOGW and Planform Area
-                        [y] = lsqnonlin(@(x) Solve_SH_OWE(C, MTV, SHi, SSi, x), x0_SH, [], [], options);
-                        
-                        % [kg, m^2] Deal Solved Output Vector
-                        [SHi.TOGW, SHi.Spln] = deal(y(1), y(2));
-                         
-                        % Calculate Superheavy Converged Parameters
-                        [SHi] = Calculate_Superheavy_Budget(C, MTV, SHi, SSi);
+                    % [kg, m^2] Solve Superheavy TOGW and Planform Area
+                    [y] = lsqnonlin(@(x) Solve_SH_OWE(C, MTV, SHi, SSi, x), x0_SH, [], [], options);
+                    
+                    % [kg, m^2] Deal Solved Output Vector
+                    [SHi.TOGW, SHi.Spln] = deal(y(1), y(2));
                      
-                        % Save Converged Data ~~~~~~~~~~~~~~~~~~~~~~~~~~
+                    % Calculate Superheavy Converged Parameters
+                    [SHi] = Calculate_Superheavy_Budget(C, MTV, SHi, SSi);
+                 
+                    % Save Converged Data ~~~~~~~~~~~~~~~~~~~~~~~~~~
+                    
+                    % Check SH ERROR
+                    [ERROR_SH] = Solve_SH_OWE(C, MTV, SHi, SSi, y);
+                    if ERROR_SH(1) > 0.001 || ERROR_SH(2) > 0.001
+
+                        % ERROR_SH
+                        % disp('SH FAIL')
+
+                    elseif SHi.OEW < 10
                         
-                        % Check SH ERROR
-                        [ERROR_SH] = Solve_SH_OWE(C, MTV, SHi, SSi, y);
-                        if ERROR_SH(1) > 0.001 || ERROR_SH(2) > 0.001
-                            ERROR_SH
-                            disp('SH FAIL')
+                        % SHi_OEW = SHi.OEW
+                        % disp('Bad SH Converge')
 
-                        else
+                    elseif 5000 < SSi.TOGW / 1000
+        
+                        % SH_TOGW = SSi.TOGW / 1000
+                        % disp('3000 MTon < SS.TOGW')
 
-                            % [int#] Creates Vehicle Counter
-							VehicleNo = VehicleNo + 1;
-                            
-                            % Save Converged Starship and Superheavy Data
-                            Vehicle.Chart(VehicleNo, :) = [Wpay(a), hleo, v_sep(e), SSi.tau, SHi.tau, SSi.TOGW, SSi.Spln, SSi.WR, SSi.Swet, SSi.Kw, SSi.TW0, SSi.OEW, SSi.OWEw, SSi.OWEv, SHi.TOGW, SHi.Spln, SHi.WR, SHi.Swet, SHi.Kw, SHi.TW0, SHi.OEW, SHi.OWEw, SHi.OWEv];
-                            Vehicle.SS(VehicleNo) = SSi;
-							Vehicle.SH(VehicleNo) = SHi;
-                            
-							% Puts data in to table thats easier to read
-							% Define the table column names
-							columnNames = {'Wpay', 'hleo', 'v_sep', 'SSi_tau', 'SHi_tau', ...
-               							'SSi_TOGW', 'SSi_Spln', 'SSi_WR',   'SSi_Swet', 'SSi_Kw', ...
-               							'SSi_TW0',  'SSi_OEW',  'SSi_OWEw', 'SSi_OWEv', ...
-               							'SHi_TOGW', 'SHi_Spln', 'SHi_WR',   'SHi_Swet', 'SHi_Kw', ...
-               							'SHi_TW0',  'SHi_OEW',  'SHi_OWEw', 'SHi_OWEv'};
-							
-							% Convert the numeric array to a table
-							VehicleChartTable = array2table(Vehicle.Chart, 'VariableNames', columnNames);
+                    else
 
-                        end
+                        % [int#] Creates Vehicle Counter
+                        clc
+						VehicleNo = VehicleNo + 1
+
+                        % Viewing Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+                        % Save Converged Starship and Superheavy Data
+                        Vehicle.Chart(VehicleNo, :) = [Wpay(a) / 1000,  v_sep(e), SSi.tau,  SHi.tau, ...
+                                                       SSi.TOGW / 1000, SSi.Spln, SSi.Swet, SSi.OWEw, SSi.OWEv, SSi.OEW, ... 
+                                                       SHi.TOGW / 1000, SHi.Spln, SHi.Swet, SHi.OWEw, SHi.OWEv, SHi.OEW];
+                        
+						% Puts data in to table thats easier to read
+						% Define the table column names
+						columnNames = {'Wpay (Ton)',     'v_sep',          'SSi_tau',        'SHi_tau', ...
+           							   'SSi_TOGW (Ton)', 'SSi_Spln (m^2)', 'SSi_Swet (m^2)', 'SSi_OWEw (kg)', 'SSi_OWEv (kg)', 'SSi_OEW (kg)', ...
+           							   'SHi_TOGW (Ton)', 'SHi_Spln (m^2)', 'SHi_Swet (m^2)', 'SHi_OWEw (kg)', 'SHi_OWEv (kg)', 'SHi_OEW (kg)',};
+						
+						% Convert the numeric array to a table
+						VehicleChartTable = array2table(Vehicle.Chart, 'VariableNames', columnNames);
+                        
+                        % Data Saved ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+                        % Save Converged Starship and Superheavy Data
+                        Vehicle.Data(VehicleNo, :) = [Wpay(a),   v_sep(e), SSi.tau,  SHi.tau, ...
+                                                       SSi.TOGW, SSi.Spln, SSi.Swet, SSi.OWEw, SSi.OWEv, SSi.OEW, ... 
+                                                       SHi.TOGW, SHi.Spln, SHi.Swet, SHi.OWEw, SHi.OWEv, SHi.OEW];
+                        Vehicle.SS(VehicleNo) = SSi;
+						Vehicle.SH(VehicleNo) = SHi;
+                        
+						% Puts data in to table thats easier to read
+						% Define the table column names
+						columnNames = {'Wpay',     'v_sep',    'SSi_tau',  'SHi_tau', ...
+           							   'SSi_TOGW', 'SSi_Spln', 'SSi_Swet', 'SSi_OWEw', 'SSi_OWEv', 'SSi_OEW', ...
+           							   'SHi_TOGW', 'SHi_Spln', 'SHi_Swet', 'SHi_OWEw', 'SHi_OWEv', 'SHi_OEW',};
+						
+						% Convert the numeric array to a table
+						VehicleData = array2table(Vehicle.Data, 'VariableNames', columnNames);
+
                     end
                 end
             end
@@ -160,82 +181,45 @@ for a = 1: 1: length(Wpay)
     end
 end
 
+% Save To Data File
+clear a columnNames e ERROR_SH ERROR_SS f i options SH SHi SS SSi tol x y
+save('Data.mat');
+
 %% Plots
-close all
+%clear all, load('Data.mat')
+clc, close all
 
 % Checks for Converged Vehicle
 if VehicleNo == 0;
-
+    
     % Print No Convergence
     fprintf('No Converged Vehicles\n')
-
+    
 else
     
-    % Plot Properties
-    P.Color = 'Black';
-    
-    % [kg, m^2] Plot OEW vs Planform Area
-    Plot_Spln_vs_OEW(VehicleChartTable.SSi_Spln, VehicleChartTable.SSi_OEW, P);
-    
-    % [kg, m^2] Plot OEW vs Planform Area
-    Plot_Spln_vs_OEW(VehicleChartTable.SHi_Spln, VehicleChartTable.SHi_OEW, P);
+    % Print # of Converged Vehicles
+    fprintf('Vehicles Converged \t%d \n', VehicleNo);
 
+    % Plot Properties - Starship
+    P.Title = 'Starship OEW vs Planform Area';
+    P.MarkerSize = 8;
+    P.x_Tick_I = 50;
+    P.y_Tick_I = 10000;
+
+    % [kg, m^2] Plot OEW vs Planform Area - Starship
+    Plot_Spln_vs_OEW(VehicleData.SSi_Spln, VehicleData.SSi_OEW, VehicleData.SSi_tau, VehicleNo, P);
+
+    % Plot Properties - Superheavy
+    P.Title = 'Superheavy OEW vs Planform Area';
+    P.x_Tick_I = 200;
+    P.y_Tick_I = 100000;
+
+    % [kg, m^2] Plot OEW vs Planform Area - Superheavy
+    Plot_Spln_vs_OEW(VehicleData.SHi_Spln, VehicleData.SHi_OEW, VehicleData.SHi_tau, VehicleNo, P);
+    
 end
 
 %% ~~~
 %}
 % Prints the simulation time on the command window.
 fprintf('Program Complete! (%0.3f seconds)\n', toc);
-
-
-% Check Calculations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-%{
-% Interested Mission Trade Matrix Increments
-a = 2; b = 3; c = 4; d = 1;
-
-% Interested tau Value
-i = 7;
-
-% Mission Parameters
-MTV.Wpay  = Wpay(a);
-MTV.Ncrew = Ncrew(b);
-MTV.kcrew = kcrew(c);
-MTV.hleo  = hleo(d);
-
-% Starship Slenderness Parameter
-SSi.tau = SS.tau(i);
-
-% [kg, m^2] Deal Solved Output Vector
-SSi.TOGW = Data.Wpay(a).Ncrew(b).kcrew(c).hleo(d).SS.TOGW(i);
-SSi.Spln = Data.Wpay(a).Ncrew(b).kcrew(c).hleo(d).SS.Spln(i);
-
-% Calculate Starship Converged Parameters
-[SSval] = Calculate_Starship_Budget(C, MTV, SSi)
-%}
-
-                        % % SSi Output Parameters to Main Starship Structure
-                        % SS.TOGW(i, :) = SSi.TOGW;       % [kg]  TOGW                - Starship
-                        % SS.Spln(i, :) = SSi.Spln;       % [m^2] Planform Area       - Starship
-                        % SS.WR(i, :)   = SSi.WR;         %       Weight Ratio        - Starship
-                        % SS.Kw(i, :)   = SSi.Kw;         %       Swet to Spln Ratio  - Starship
-                        % SS.TW0(i, :)  = SSi.TW0;        %       T/W at Sea Level    - Starship
-                        % SS.OEW(i, :)  = SSi.OEW;        % [kg]  Operating Empty Weight (Dry Weight) - Starship 
-                        % SS.OWEw(i, :) = SSi.OWEw;       % [kg]  Weight Budget - Starship 
-                        % SS.OWEv(i, :) = SSi.OWEv;       % [kg]  Volume Budget - Starship 
-                        % SS.Vppl(i, :) = SSi.Vppl;       % [m^3] Propellant Volume - Starship 
-                        % SS.Wppl(i, :) = SSi.Wppl;       % [kg]  Propellant Weight - Starship 
-
-
-                            % % SHi Output Parameters to Main Superheavy Structure
-                            % SH.TOGW(f, :) = SHi.TOGW;       % [kg]  TOGW                - Superheavy
-                            % SH.Spln(f, :) = SHi.Spln;       % [m^2] Planform Area       - Superheavy
-                            % SH.WR(f, :)   = SHi.WR;         %       Weight Ratio        - Superheavy
-                            % SH.Kw(f, :)   = SHi.Kw;         %       Swet to Spln Ratio  - Superheavy
-                            % SH.TW0(f, :)  = SHi.TW0;        %       T/W at Sea Level    - Superheavy
-                            % SH.OEW(f, :)  = SHi.OEW;        % [kg]  Operating Empty Weight (Dry Weight) - Superheavy 
-                            % SH.OWEw(f, :) = SHi.OWEw;       % [kg]  Weight Budget - Superheavy 
-                            % SH.OWEv(f, :) = SHi.OWEv;       % [kg]  Volume Budget - Superheavy 
-                            % SH.Vppl(f, :) = SHi.Vppl;       % [m^3] Propellant Volume - Superheavy 
-                            % SH.Wppl(f, :) = SHi.Wppl;       % [kg]  Propellant Weight - Superheavy 
-
-%}
