@@ -118,7 +118,7 @@ function [C, SS, SH] = Constant_Parameters()
     SS.ET0 = 258 * 1000;
     
     % [int#] # Engines - Starship
-    SS.N_eng = 9;
+    SS.N_eng = 6;
 
     % [Mton -> kg] Sealevel Thrust - Superheavy
     SH.ET0 = 230 * 1000;

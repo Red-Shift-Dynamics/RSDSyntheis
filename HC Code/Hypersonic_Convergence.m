@@ -145,7 +145,7 @@ for a = 1: 1: length(Wpay)
                         % Save Converged Starship and Superheavy Data
                         Vehicle.Chart(VehicleNo, :) = [Wpay(a) / 1000,  v_sep(e), SSi.tau, SHi.tau, ...
                                                        SSi.TOGW / 1000, SSi.Spln, SSi.Swet, SSi.OWEw, SSi.OWEv, SSi.OEW / 1000, SSi.mppl / 1000, SSi.WR, ... 
-                                                       (SHi.TOGW - SSi.TOGW) / 1000, SHi.Spln - SSi.Spln, SHi.Swet, SHi.OWEw, SHi.OWEv, (SHi.OEW - SSi.OEW) / 1000, SHi.mppl / 1000, SHi.WR];
+                                                       (SHi.TOGW - SSi.TOGW) / 1000, SHi.Spln, SHi.Swet, SHi.OWEw, SHi.OWEv, (SHi.OEW - SSi.OEW) / 1000, SHi.mppl / 1000, SHi.WR];
                         
 						% Puts data in to table thats easier to read
 						% Define the table column names
@@ -161,7 +161,7 @@ for a = 1: 1: length(Wpay)
                         % Save Converged Starship and Superheavy Data
                         Vehicle.Data(VehicleNo, :) = [Wpay(a),   v_sep(e), SSi.tau,  SHi.tau, ...
                                                        SSi.TOGW, SSi.Spln, SSi.Swet, SSi.OWEw, SSi.OWEv, SSi.OEW, SSi.mppl, ... 
-                                                       SHi.TOGW, SHi.Spln-SSi.Spln, SHi.Swet, SHi.OWEw-SSi.OWEw, SHi.OWEv, SHi.OEW, SHi.mppl];
+                                                       SHi.TOGW, SHi.Spln, SHi.Swet, SHi.OWEw-SSi.OWEw, SHi.OWEv, SHi.OEW, SHi.mppl];
                         Vehicle.SS(VehicleNo) = SSi;
 						Vehicle.SH(VehicleNo) = SHi;
 
