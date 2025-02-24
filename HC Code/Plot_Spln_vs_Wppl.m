@@ -1,9 +1,9 @@
-%% Plot OEW vs Planform Area
-function Plot_Spln_vs_TOGW(Spln, TOGW, tau, Wpay, VehicleNo, P)
+%% Plot OEW vs Propellant Weight
+function Plot_Spln_vs_Wppl(Spln, Wppl, tau, Wpay, VehicleNo, P);
     
     % Axis Parameters
     x = Spln;
-    y = TOGW;
+    y = Wppl;
     C1 = tau;
     C2 = Wpay;
     Data = [x, y, C1, C2];
