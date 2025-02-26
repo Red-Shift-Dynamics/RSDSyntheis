@@ -1,5 +1,5 @@
 %% Constants For Both Vehicles
-function [C, SS, SH, FS] = Constant_Parameters()
+function [C, SS, SH] = Constant_Parameters()
 
     % [% -> dec] Margin on Inert Weight
     C.mua = 14 / 100;
@@ -9,16 +9,18 @@ function [C, SS, SH, FS] = Constant_Parameters()
 
     % [(ton -> kg)/m^3] Payload Density
     C.rho_pay = (100 * 1000) / 664.0246163; 
-    % C.rho_pay = (15 * 1000) / 664.0246163; 
+    %C.rho_pay = (15 * 1000) / 664.0246163; 
+    %C.rho_pay = (60 * 1000) / 664.0246163;
 
     % Support Weight Coeff - Hot Stage
-    C.ksup = 0.05;
+    %C.ksup = 0.05;
+    C.ksup = 0.013;     %Updated 2/25 (with assumed 20t hot staging ring)
 
     % Starship Constant Parameters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     % [kg/m^2] Structural Index - Starship 
     SS.Istr = 28.3008;      % ~ FROM JASON ~
-    
+
     % [Ton -> kg] Constant Unmammed Systems Weight - Starship 
     SS.Cun = .928 * 1000;
 
@@ -55,7 +57,8 @@ function [C, SS, SH, FS] = Constant_Parameters()
     % Superheavy Constants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     % [kg/m^2] Structural Index - Superheavy
-    SH.Istr = 95.5331;      % ~ FROM JASON ~
+    %SH.Istr = 95.5331;      % ~ FROM JASON ~
+    SH.Istr = 75;
 
     % [Ton -> kg] Constant Unmammed Systems Weight - Full Stack
     SH.Cun = .304 * 1000;

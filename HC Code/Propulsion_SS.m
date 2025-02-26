@@ -1,5 +1,5 @@
 %% T/W at Sea Level - Starship
-function [SS] = Propulsion(SS)
+function [SS] = Propulsion_SS(SS)
     
     % [kg] Sea Level Thrust - Starship
     SS.T0 = SS.ET0 * SS.N_eng;

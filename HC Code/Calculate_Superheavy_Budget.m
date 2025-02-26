@@ -23,7 +23,10 @@ function [SH] = Calculate_Superheavy_Budget(C, MTV, SH, SS)
     SH.OWEw = SH.OEW;
     
     % [kg] Superheavy Volume Budget
-    SH.OWEv = (SH.tau*SH.Spln^1.5*(1 - SH.kvs - SH.kvv) - SH.Vun - SS.TOGW*(SS.WR - 1)/SS.rho_ppl) / ...
+    % SH.OWEv = (SH.tau*SH.Spln^1.5*(1 - SH.kvs - SH.kvv) - SH.Vun - SS.TOGW*(SS.WR - 1)/SS.rho_ppl) / ...
+    %           ((SH.WR - 1)/SH.rho_ppl + SH.kve*(SH.TW0)*SH.WR);
+
+    SH.OWEv = (SH.tau*SH.Spln^1.5*(1 - SH.kvs - SH.kvv) - SH.Vun) / ...
               ((SH.WR - 1)/SH.rho_ppl + SH.kve*(SH.TW0)*SH.WR);
 
     % Propellant Stuff ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

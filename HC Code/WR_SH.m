@@ -2,13 +2,13 @@
 Function WR_SH.m
 Authored By: Aayush Sudhakar
 Created: 2/18/2025
-Updated: 2/20/2025
+Updated: 2/25/2025
 
 This Function: 
 Calculates the weight ratio for Stage 1 during launch with gravity adjusted ideal rocket eqution
 Assumes a 9000m/s required delta V for orbit (with losses)
 Assumes 150 second Stage 1 burn time 
-Assumes 400,000 kg required fuel for boostback and landing
+Assumes 10% of SH TOGW fuel required for boostback and landing
 
 Inputs:                                                  Units
 TOGW_SH  = Stage 1 Take Off Gross Weight (Superheavy)    (kg)
@@ -52,6 +52,9 @@ function SH = WR_SH(SH, SS, Vsep)
     % to land)
 
     m_ppl = m_ppl_launch + .1*TOGW_SH;
+    % [kg]Mass of total SH propellant. Includes estimated 10% of TOGW for landing burn
+
+    %m_ppl = m_ppl_launch + 400000;
     % [kg]Mass of total SH propellant. Includes estimated 10% of TOGW for landing burn
 
     WR = (TOGW_SH) / (TOGW_SH - m_ppl);

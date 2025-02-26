@@ -12,7 +12,7 @@ function [ERROR] = Solve_SH_OWE(C, MTV, SH, SS, x)
     ERROR(1, 1) = abs(OWE_ERROR);
     
     % [kg] Calculate TOGW - Superheavy
-    SH.TOGWnew = SH.Wppl + SH.OEW + MTV.Wpay;
+    SH.TOGWnew = SH.Wppl + SH.OEW;
     
     % [kg/m^2] TOGW ERROR
     TOGW_Spln_ERROR = (SH.TOGWnew - SH.TOGW)/SH.Spln;
