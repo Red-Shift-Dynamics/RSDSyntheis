@@ -1,22 +1,24 @@
 clear all, clc, close all, format compact, format longG, tic;
 %% Imports ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Constant Parameters
-[C, SS, SH, FS] = Constant_Parameters();
+[C, SS, SH] = Constant_Parameters();
 
 %% Input Paramters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-% Create New Incriment Structure for Starship Superheavy and Full Stack
-SSi = SS;   SHi = SH;   FSi = FS;   VehicleNo = 0;
+% Create New Incriment Structure for Starship and Superheavy
+SSi = SS;   SHi = SH;   VehicleNo = 0;
 
-%{
-% Mission Trade Variables (MTV) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% Converge SH
+Converge_SH = true;
+
+% Mission Trade Variables (MTV) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % [MTon -> kg] Payload Weight
-%Wpay = [50: 25: 150] * 1000;
-Wpay = 100 * 1000;
+Wpay = [100: 10: 150] * 1000;
+%Wpay = 100 * 1000;
 
 % [m/s] Separation Velocity
-v_sep = [1400: 100: 2500];
-%v_sep = 3000;
+%v_sep = [1400: 100: 2500];       % PROVIDE RANGE
+v_sep = 1500;
 
 % Iterated Geometric Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -24,42 +26,10 @@ v_sep = [1400: 100: 2500];
 SS.tau = transpose([0.16: 0.02: 0.26]);
 %SS.tau = 0.23;
 
-% Slenderness Parameter - Full Stack
-%FS.tau = transpose([0.2: 0.05: 0.45]);
+% Slenderness Parameter - Superheavy
+%SH.tau = transpose([0.16: 0.02: 0.28]);
 %SH.tau = SS.tau;
-FS.tau = 0.48;
-%FS.tau = 0.4;
-%}
-
-% 34 Converged Vehicles 2/23 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-%{
-% [MTon -> kg] Payload Weight
-Wpay = [50: 25: 150] * 1000;
-
-% [m/s] Separation Velocity
-v_sep = 3000;
-
-% Slenderness Parameter - Starship
-SS.tau = transpose([0.18: 0.02: 0.3]);
-
-% Slenderness Parameter - Full Stack
-FS.tau = 0.45;
-%}
-
-% 70 Converged Vehicles 2/23 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-%
-% [MTon -> kg] Payload Weight
-Wpay = 100 * 1000;
-
-% [m/s] Separation Velocity
-v_sep = [1500: 100: 2500];
-
-% Slenderness Parameter - Starship
-SS.tau = transpose([0.18: 0.02: 0.3]);
-
-% Slenderness Parameter - Full Stack
-FS.tau = 0.45;
-%}
+SH.tau = 0.28;
 
 % Inital Guessed Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -69,16 +39,16 @@ SS_TOGWi = 1700 * 1000;
 % [m^2] Planform Area - Starship
 SS_Splni = 550;
 
-% [MTon -> kg] Takeoff Gross Weight - Full Stack
-FS_TOGWi = 5100 * 1000;
+% [MTon -> kg] Takeoff Gross Weight - Superheavy
+SH_TOGWi = 5100 * 1000;
 
-% [m^2] Planform Area - Full Stack
-FS_Splni = 1200;
+% [m^2] Planform Area - Superheavy
+SH_Splni = 1200;
 
 %% The Meat and the Bones ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Initial Conditions
 x0_SS = [SS_TOGWi; SS_Splni];
-y0_FS = [FS_TOGWi; FS_Splni];
+x0_SH = [SH_TOGWi; SH_Splni];
 
 % Set Optimization Options
 tol = 1e-5;                                 % Solver Tolerance           
@@ -102,7 +72,7 @@ for a = 1: 1: length(Wpay)
             
             % Starship ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-            % Slenderness Parameter - Starship
+            % Starship Slenderness Parameter
             SSi.tau = SS.tau(i);
 
             % [kg, m^2] Solve Starship TOGW and Planform Area
@@ -131,60 +101,77 @@ for a = 1: 1: length(Wpay)
             %     disp('3000 MTon < SS.TOGW')
             %     SS_TOGW = SSi.TOGW / 1000
 
+            elseif Converge_SH == false
+        
+                % [int#] Creates Vehicle Counter
+                clc
+		        VehicleNo = VehicleNo + 1
+    
+                % Viewing Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+                % Save Converged Starship Data
+                Vehicle.Chart(VehicleNo, :) = [Wpay(a) / 1000,  v_sep(e), SSi.tau, ...
+                                               SSi.TOGW / 1000, SSi.Spln, SSi.Swet, SSi.OWEw, SSi.OWEv, SSi.OEW / 1000, SSi.mppl / 1000, SSi.WR];
+                
+		        % Puts data in to table thats easier to read
+		        % Define the table column names
+		        columnNames = {'Wpay (Ton)',    'v_sep',         'SS_tau', ...
+						       'SS_TOGW (Ton)', 'SS_Spln (m^2)', 'SS_Swet (m^2)', 'SS_OWEw (kg)', 'SS_OWEv (kg)', 'SS_OEW (Ton)', 'SS_mppl (Ton)', 'SS_WR'};
+		        
+		        % Convert the numeric array to a table
+		        VehicleChartTable = array2table(Vehicle.Chart, 'VariableNames', columnNames);
+                
+                % Data Saved ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+                % Save Converged Starship Data
+                Vehicle.Data(VehicleNo, :) = [Wpay(a),   v_sep(e), SSi.tau, ...
+                                               SSi.TOGW, SSi.Spln, SSi.Swet, SSi.OWEw, SSi.OWEv, SSi.OEW, SSi.mppl];
+                Vehicle.SS(VehicleNo) = SSi;
+    
+		        % Define the table column names
+		        columnNames = {'Wpay',    'v_sep',   'SS_tau', ...
+						       'SS_TOGW', 'SS_Spln', 'SS_Swet', 'SS_OWEw', 'SS_OWEv', 'SS_OEW', 'SS_mppl'};
+    
+		        % Convert the numeric array to a table
+		        VehicleData = array2table(Vehicle.Data, 'VariableNames', columnNames);
+
             else
 
-                % Iterate Through Full Stack tau Values
-                for f = 1: 1: length(FS.tau)
+                % Iterate Through Superheavy tau Values
+                for f = 1: 1: length(SH.tau)
 
-                    % Slenderness Parameter - Full Stack
-                    FSi.tau = FS.tau(f);
+                    % Superheavy Slenderness Parameter
+                    SHi.tau = SH.tau(f);
 
                     % [kg, m^2] Solve Superheavy TOGW and Planform Area
-                    [y] = lsqnonlin(@(y) Solve_FS_OWE(C, MTV, SSi, SHi, FSi, y), y0_FS, [], [], options);
+                    [y] = lsqnonlin(@(x) Solve_SH_OWE(C, MTV, SHi, SSi, x), x0_SH, [], [], options);
 
                     % [kg, m^2] Deal Solved Output Vector
-                    [FSi.TOGW, FSi.Spln] = deal(y(1), y(2));
+                    [SHi.TOGW, SHi.Spln] = deal(y(1), y(2));
 
                     % Calculate Superheavy Converged Parameters
-                    [FSi] = Calculate_Full_Stack_Budget(C, MTV, SSi, SHi, FSi);
+                    [SHi] = Calculate_Superheavy_Budget(C, MTV, SHi, SSi);
 
                     % Save Converged Data ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
                     % Check SH ERROR
-                    [ERROR_FS] = Solve_FS_OWE(C, MTV, SSi, SHi, FSi, y);
-                    if ERROR_FS(1) > 0.001 || ERROR_FS(2) > 0.001
+                    [ERROR_SH] = Solve_SH_OWE(C, MTV, SHi, SSi, y);
+                    if ERROR_SH(1) > 0.001 || ERROR_SH(2) > 0.001
 
-                        % ERROR_FS
-                        % disp('FS FAIL')
+                        % ERROR_SH
+                        % disp('SH FAIL')
 
-                    elseif FSi.OEW < 10
+                    elseif SHi.OEW < 10
 
-                        FSi_OEW = FSi.OEW
-                        disp('Bad FS Converge')
+                        % SHi_OEW = SHi.OEW
+                        % disp('Bad SH Converge')
 
-                    % elseif 5000 < FSi.TOGW / 1000
-                    % 
-                    %     FSi_TOGW = FSi.TOGW / 1000
-                    %     disp('3000 MTon < FSi.TOGW')
+                    elseif 5000 < SSi.TOGW / 1000
+
+                        % SH_TOGW = SSi.TOGW / 1000
+                        % disp('3000 MTon < SS.TOGW')
 
                     else
-                        
-                        % Calculate Superheavy Parameters
-                        SHi.TOGW = FSi.TOGW - SSi.TOGW;
-                        SHi.Spln = FSi.Spln - SSi.Spln;
-                        SHi.Swet = FSi.Swet - SSi.Swet;
-                        SHi.OWEw = FSi.OWEw - SSi.OWEw;
-                        SHi.OWEv = FSi.OWEv - SSi.OWEv;
-                        SHi.OEW  = FSi.OEW  - SSi.OEW;
-                        SHi.Wppl = FSi.Wppl - SSi.Wppl;
-                        SHi.WR   = FSi.WR;
-                        SHi.ff   = FSi.ff;
-
-                        SSi.Vtot = SSi.tau * SSi.Spln^1.5;
-                        FSi.Vtot = (FSi.tau*FSi.Spln^1.5) - SSi.Vtot;
-                        SHi.Vtot = FSi.Vtot - SSi.Vtot;
-                        SHi.Spln = FSi.Spln - SSi.Spln;
-                        SHi.tau  = SHi.Vtot / SHi.Spln^1.5;
 
                         % [int#] Creates Vehicle Counter
                         clc
@@ -193,38 +180,32 @@ for a = 1: 1: length(Wpay)
                         % Viewing Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
                         % Save Converged Starship and Superheavy Data
-                        Vehicle.Chart(VehicleNo, :) = [Wpay(a) / 1000,  v_sep(e), SSi.tau,  SHi.tau,  FSi.tau, ...
-                                                       SSi.TOGW / 1000, SSi.Spln, SSi.Swet, SSi.OWEw, SSi.OWEv, SSi.OEW / 1000, SSi.Wppl / 1000, SSi.WR, SSi.ff, ... 
-                                                       SHi.TOGW / 1000, SHi.Spln, SHi.Swet, SHi.OWEw, SHi.OWEv, SHi.OEW / 1000, SHi.Wppl / 1000, SHi.WR, SHi.ff, ... 
-                                                       FSi.TOGW / 1000, FSi.Spln, FSi.Swet, FSi.OWEw, FSi.OWEv, FSi.OEW / 1000, FSi.Wppl / 1000, FSi.WR, FSi.ff];
-
+                        Vehicle.Chart(VehicleNo, :) = [Wpay(a) / 1000,  v_sep(e), SSi.tau, SHi.tau, ...
+                                                       SSi.TOGW / 1000, SSi.Spln, SSi.Swet, SSi.OWEw, SSi.OWEv, SSi.OEW / 1000, SSi.mppl / 1000, SSi.WR, ... 
+                                                       SHi.TOGW / 1000, SHi.Spln, SHi.Swet, SHi.OWEw, SHi.OWEv, SHi.OEW / 1000, SHi.mppl / 1000, SHi.WR];
+                        
 						% Puts data in to table thats easier to read
 						% Define the table column names
-						columnNames = {'Wpay (Ton)',    'v_sep',         'SS_tau',        'SH_tau',       'FS_tau', ...
-           							   'SS_TOGW (Ton)', 'SS_Spln (m^2)', 'SS_Swet (m^2)', 'SS_OWEw (kg)', 'SS_OWEv (kg)', 'SS_OEW (Ton)', 'SS_Wppl (Ton)', 'SS_WR', 'SS_ff',...
-           							   'SH_TOGW (Ton)', 'SH_Spln (m^2)', 'SH_Swet (m^2)', 'SH_OWEw (kg)', 'SH_OWEv (kg)', 'SH_OEW (Ton)', 'SH_Wppl (Ton)', 'SH_WR', 'SH_ff',...
-                                       'FS_TOGW (Ton)', 'FS_Spln (m^2)', 'FS_Swet (m^2)', 'FS_OWEw (kg)', 'FS_OWEv (kg)', 'FS_OEW (Ton)', 'FS_Wppl (Ton)', 'FS_WR', 'FS_ff'};
-
+						columnNames = {'Wpay (Ton)',    'v_sep',         'SS_tau',        'SH_tau', ...
+           							   'SS_TOGW (Ton)', 'SS_Spln (m^2)', 'SS_Swet (m^2)', 'SS_OWEw (kg)', 'SS_OWEv (kg)', 'SS_OEW (Ton)', 'SS_mppl (Ton)', 'SS_WR' ...
+           							   'SH_TOGW (Ton)', 'SH_Spln (m^2)', 'SH_Swet (m^2)', 'SH_OWEw (kg)', 'SH_OWEv (kg)', 'SH_OEW (Ton)', 'SH_mppl (Ton)', 'SH_WR'};
+						
 						% Convert the numeric array to a table
 						VehicleChartTable = array2table(Vehicle.Chart, 'VariableNames', columnNames);
-
+                        
                         % Data Saved ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
                         % Save Converged Starship and Superheavy Data
-                        Vehicle.Data(VehicleNo, :) = [Wpay(a),  v_sep(e), SSi.tau,  SHi.tau,  FSi.tau, ...
-                                                      SSi.TOGW, SSi.Spln, SSi.Swet, SSi.OWEw, SSi.OWEv, SSi.OEW, SSi.Wppl, SSi.WR, SSi.ff, ... 
-                                                      SHi.TOGW, SHi.Spln, SHi.Swet, SHi.OWEw, SHi.OWEv, SHi.OEW, SHi.Wppl, SHi.WR, SHi.ff, ... 
-                                                      FSi.TOGW, FSi.Spln, FSi.Swet, FSi.OWEw, FSi.OWEv, FSi.OEW, FSi.Wppl, FSi.WR, FSi.ff];
+                        Vehicle.Data(VehicleNo, :) = [Wpay(a),   v_sep(e), SSi.tau,  SHi.tau, ...
+                                                       SSi.TOGW, SSi.Spln, SSi.Swet, SSi.OWEw, SSi.OWEv, SSi.OEW, SSi.mppl, ... 
+                                                       SHi.TOGW, SHi.Spln, SHi.Swet, SHi.OWEw-SSi.OWEw, SHi.OWEv, SHi.OEW, SHi.mppl];
                         Vehicle.SS(VehicleNo) = SSi;
 						Vehicle.SH(VehicleNo) = SHi;
-                        Vehicle.FS(VehicleNo) = FSi;
 
-						% Puts data in to table thats easier to read
 						% Define the table column names
-						columnNames = {'Wpay',    'v_sep',   'SS_tau',  'SH_tau',  'FS_tau', ...
-           							   'SS_TOGW', 'SS_Spln', 'SS_Swet', 'SS_OWEw', 'SS_OWEv', 'SS_OEW', 'SS_Wppl', 'SS_WR', 'SS_ff', ...
-           							   'SH_TOGW', 'SH_Spln', 'SH_Swet', 'SH_OWEw', 'SH_OWEv', 'SH_OEW', 'SH_Wppl', 'SH_WR', 'SH_ff', ...
-                                       'FS_TOGW', 'FS_Spln', 'FS_Swet', 'FS_OWEw', 'FS_OWEv', 'FS_OEW', 'FS_Wppl', 'FS_WR', 'FS_ff'};
+						columnNames = {'Wpay',    'v_sep',   'SS_tau',  'SH_tau', ...
+           							   'SS_TOGW', 'SS_Spln', 'SS_Swet', 'SS_OWEw', 'SS_OWEv', 'SS_OEW', 'SS_mppl' ...
+           							   'SH_TOGW', 'SH_Spln', 'SH_Swet', 'SH_OWEw', 'SH_OWEv', 'SH_OEW', 'SH_mppl'};
 
 						% Convert the numeric array to a table
 						VehicleData = array2table(Vehicle.Data, 'VariableNames', columnNames);
@@ -292,7 +273,9 @@ else
     P.y_Tick_I = 50000 / 1000;      % [kg -> Ton]
 
     % [kg, m^2] Plot OEW vs Planform Area - Superheavy
-    Plot_Spln_vs_OEW(VehicleData.SH_Spln, VehicleData.SH_OEW/1000, VehicleData.SH_tau, C2, VehicleNo, P);
+    if Converge_SH == true
+        Plot_Spln_vs_OEW(VehicleData.SH_Spln, VehicleData.SH_OEW/1000, VehicleData.SH_tau, C2, VehicleNo, P);
+    end
 
     % TOGW vs Planform Area ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
@@ -312,28 +295,31 @@ else
     P.Title = 'Superheavy TOGW vs Planform Area';
 
     % [kg, m^2] Plot TOGW vs Planform Area - Superheavy
-    Plot_Spln_vs_TOGW(VehicleData.SH_Spln, VehicleData.SH_TOGW/1000, VehicleData.SH_tau, C2, VehicleNo, P)
-    
+    if Converge_SH == true
+        Plot_Spln_vs_TOGW(VehicleData.SH_Spln, VehicleData.SH_TOGW/1000, VehicleData.SH_tau, C2, VehicleNo, P)
+    end
+
     % Wppl vs Planform Area ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    %{
-    % Axis Labels
-    P.x_Label  = 'Planform Area, Spln (m^2)';
-    P.y_Label  = 'Propellant Weight, Wppl (Tons)';
-    P.x_Tick_I = 50;
-    P.y_Tick_I = 100000 / 1000;      % [kg -> Ton]
-
-    % Plot Properties - Starship
-    P.Title = 'Starship Wppl vs Planform Area';
-
-    % [kg, m^2] Plot Wppl vs Planform Area - Starship
-    Plot_Spln_vs_Wppl(VehicleData.SS_Spln, VehicleData.SS_Wppl/1000, VehicleData.SS_tau, C2, VehicleNo, P)
-
-    % Plot Properties - Superheavy
-    P.Title = 'Superheavy Wppl vs Planform Area';
-
-    % [kg, m^2] Plot Wppl vs Planform Area - Superheavy
-    Plot_Spln_vs_Wppl(VehicleData.SH_Spln, VehicleData.SH_Wppl/1000, VehicleData.SH_tau, C2, VehicleNo, P)
-    %}
+    
+    % % Axis Labels
+    % P.x_Label  = 'Planform Area, Spln (m^2)';
+    % P.y_Label  = 'Propellant Weight, Wppl (Tons)';
+    % P.x_Tick_I = 50;
+    % P.y_Tick_I = 100000 / 1000;      % [kg -> Ton]
+    % 
+    % % Plot Properties - Starship
+    % P.Title = 'Starship Wppl vs Planform Area';
+    % 
+    % % [kg, m^2] Plot Wppl vs Planform Area - Starship
+    % Plot_Spln_vs_Wppl(VehicleData.SS_Spln, VehicleData.SS_Wppl/1000, VehicleData.SS_tau, C2, VehicleNo, P)
+    % 
+    % % Plot Properties - Superheavy
+    % P.Title = 'Superheavy Wppl vs Planform Area';
+    % 
+    % % [kg, m^2] Plot Wppl vs Planform Area - Superheavy
+    % if Converge_SH == true
+    %   Plot_Spln_vs_Wppl(VehicleData.SH_Spln, VehicleData.SH_Wppl/1000, VehicleData.SH_tau, C2, VehicleNo, P)
+    % end
 end
 
 %% ~~~

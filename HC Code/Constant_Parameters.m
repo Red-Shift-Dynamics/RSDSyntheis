@@ -16,10 +16,8 @@ function [C, SS, SH, FS] = Constant_Parameters()
 
     % Starship Constant Parameters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    % % [kg/m^2] Structural Index - Starship 
-    % SS.Istr = 33;      % ~ GUESSED VALUE ~ 
-    % SS.Istr = 25.17;
-    SS.Istr = 28.3008;  % ~ FROM JASON ~
+    % [kg/m^2] Structural Index - Starship 
+    SS.Istr = 28.3008;      % ~ FROM JASON ~
     
     % [Ton -> kg] Constant Unmammed Systems Weight - Starship 
     SS.Cun = .928 * 1000;
@@ -49,33 +47,28 @@ function [C, SS, SH, FS] = Constant_Parameters()
     SS.ET0 = 258 * 1000;
 
     % Engine Thrust to Weight - Starship 
-    SS.E_TW = 141.1042945;
+    SS.E_TW = 116.0020271;              % Updated - 2/25
     
     % [int#] # Engines - Starship
     SS.N_eng = 6;
 
-    % Full Stack Constant Parameters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    
-    % [kg/m^2] Structural Index - Full Stack
-    % SH.Istr = 40;      % ~ GUESSED VALUE ~ 
-    % SH.Istr = 148.7;
-    %FS.Istr = 80;
-    FS.Istr = 95.5331;
-
-    % [Ton -> kg] Constant Unmammed Systems Weight - Full Stack
-    FS.Cun = .304 * 1000;
-    
-    % Systems Volume Coeff - Full Stack
-    FS.kvs = 0.018;
-    
-    % Void Volume Coeff - Full Stack
-    FS.kvv = 0.12;
-
-    % [m^3] Unmanned Systems Volume Coeff - Full Stack
-    FS.Vun = 5;
-
     % Superheavy Constants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
+    % [kg/m^2] Structural Index - Superheavy
+    SH.Istr = 95.5331;      % ~ FROM JASON ~
+
+    % [Ton -> kg] Constant Unmammed Systems Weight - Full Stack
+    SH.Cun = .304 * 1000;
+    
+    % Systems Volume Coeff - Full Stack
+    SH.kvs = 0.018;
+    
+    % Void Volume Coeff - Full Stack
+    SH.kvv = 0.12;
+
+    % [m^3] Unmanned Systems Volume Coeff - Full Stack
+    SH.Vun = 5;
+
     % [m^3/(Ton -> kg)] Engine Volume Coeff - Superheavy
     SH.kve = 0.005 / 1000;
     
@@ -92,7 +85,7 @@ function [C, SS, SH, FS] = Constant_Parameters()
     SH.ET0 = 230 * 1000;
     
     % Engine Thrust to Weight - Superheavy 
-    SH.E_TW = 91.54785723;
+    SH.E_TW = 141.1042945;          % Updated - 2/25
 
     % [int#] # Engines - Superheavy
     SH.N_eng = 33;

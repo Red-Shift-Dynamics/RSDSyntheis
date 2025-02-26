@@ -21,16 +21,13 @@ ff_SH    = Superheavy fuel fraction                      (-)
 m_ppl_SH = Superheavy propellant                         (kg)
 %}
 
-function FS = WR_SH(FS, SS, SH, Vsep)
+function SH = WR_SH(SH, SS, Vsep)
     
-    TOGW_FS = FS.TOGW;
+    TOGW_SH = SH.TOGW;
     % [kg]Superheavy TOGW
 
-    % TOGW_SH = SH.TOGW;
-    % % [kg]Superheavy TOGW
-
-    % TOGW_SS = SS.TOGW;
-    % % [kg]Starship TOGW
+    TOGW_SS = SS.TOGW;
+    % [kg]Starship TOGW
 
     IspSL = SH.IspSL;
     % [s]Raptor 2 ISP at Sea Level
@@ -44,34 +41,28 @@ function FS = WR_SH(FS, SS, SH, Vsep)
     g = 9.80665;
     % [m/s^2]Earth acceleration due to gravity
 
-    dVLaunch = Vsep + (150 * g);
+    dVLaunch = Vsep + 150 * g;
     % [m/s]Gravity adjusted delta v at separation
 
-    % mf = (TOGW_SH + TOGW_SS)/ exp(dVLaunch / (g * Isp));
-    % % [kg]Mass at stage separation
-
-    mf = TOGW_FS / exp(dVLaunch / (g * Isp));
+    mf = (TOGW_SH + TOGW_SS)/ exp(dVLaunch / (g * Isp));
     % [kg]Mass at stage separation
 
-    m_ppl_launch = TOGW_FS - mf;
+    m_ppl_launch = (TOGW_SH + TOGW_SS) - mf;
     % [kg]Mass of the SH propellant used in the burn (does not account for fuel required 
     % to land)
 
-    % m_ppl = m_ppl_launch + .1*TOGW_SH;
-    % % [kg]Mass of total SH propellant. Includes estimated 10% of TOGW for landing burn
-
-    m_ppl = m_ppl_launch + .1*TOGW_FS;
+    m_ppl = m_ppl_launch + .1*TOGW_SH;
     % [kg]Mass of total SH propellant. Includes estimated 10% of TOGW for landing burn
 
-    WR = (TOGW_FS) / (TOGW_FS - m_ppl);
+    WR = (TOGW_SH) / (TOGW_SH - m_ppl);
     % []Weight Ratio of SH 
 
     ff = (WR - 1) / WR;
     % []Stage 1 Fuel Fraction
 
-    FS.WR = WR;
-    FS.ff = ff;
-    FS.Wppl = m_ppl;
+    SH.WR = WR;
+    SH.ff = ff;
+    SH.Wppl = m_ppl;
     % []Add outputs to structure
 
 end
