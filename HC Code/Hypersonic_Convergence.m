@@ -8,28 +8,32 @@ clear all, clc, close all, format compact, format longG, tic;
 SSi = SS;   SHi = SH;   VehicleNo = 0;
 
 % Converge SH
-Converge_SH = false;
+Converge_SH = true;
 
 % Mission Trade Variables (MTV) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % [MTon -> kg] Payload Weight
-Wpay = [100: 25: 200] * 1000;
-%Wpay = 100 * 1000;
+Wpay = [100: 10: 150] * 1000;
+% Wpay = 100 * 1000;
 
 % [m/s] Separation Velocity
-%v_sep = [1400: 200: 2200];       % PROVIDE RANGE
+% v_sep = [1400: 200: 2200];       % PROVIDE RANGE
 v_sep = 1500;
 
 % Iterated Geometric Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Slenderness Parameter - Starship
-SS.tau = transpose([0.18: 0.02: 0.3]);
-%SS.tau = 0.24;
+SS.tau = transpose([0.18: 0.02: 0.28]);
+% SS.tau = 0.24;
 
 % Slenderness Parameter - Superheavy
 SH.tau = transpose([0.2: 0.02: 0.34]);
-%SH.tau = SS.tau;
-%SH.tau = 0.28;
+% SH.tau = SS.tau;
+% SH.tau = 0.28;
+
+% Technology Trade Variables (TTV) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+% [Structural Index
 
 % Inital Guessed Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

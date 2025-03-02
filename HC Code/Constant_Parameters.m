@@ -32,6 +32,7 @@ function [C, SS, SH] = Constant_Parameters()
 
     % Void Volume Coeff - Starship 
     SS.kvv = 0.12;
+    %SS.kvv = 0.05;      % JUSTIFY VALUE
 
     % [m^3] Unmanned Systems Volume Coeff - Starship 
     SS.Vun = 5;
@@ -67,7 +68,7 @@ function [C, SS, SH] = Constant_Parameters()
     SH.kvs = 0.018;
     
     % Void Volume Coeff - Full Stack
-    SH.kvv = 0.12;
+    SH.kvv = SS.kvv;
 
     % [m^3] Unmanned Systems Volume Coeff - Full Stack
     SH.Vun = 5;
