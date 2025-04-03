@@ -12,7 +12,7 @@ SS.H_Nose = 13.65;
 SS.H_Fuse = 56.52;
 
 % [m] Fuselage Height - Superheavy
-SH.H_Fuse = 66.5;
+SH.H_Fuse = 71;
 
 % [m] Fore and Aft Flaps Span - Starship
 SS.b_FF = 4.21;
