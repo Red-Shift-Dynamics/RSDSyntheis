@@ -11,7 +11,9 @@ function Plot_Common(x, y, C1, C2, VehicleNo, P)
     Saved_C1 = unique(C1);
 
     % Saved Converged C2
-    Saved_C2 = unique(C2);
+    if isnan(C2) == 0
+        Saved_C2 = unique(C2);
+    end
     
     % Create Figure
     figure( ...
@@ -60,6 +62,22 @@ function Plot_Common(x, y, C1, C2, VehicleNo, P)
             hold on;
     
         end
+
+    end
+
+    % Plot Target Value if True
+    if P.Plot_TV == true
+
+        % Plot Data Point
+        P.Marker    = '*';
+        P.LineStyle = 'none';
+        P.Color     = 'r';
+        Plot_Function(P.Target_x, P.Target_y, P);
+        hold on;
+
+        P.Marker = 'o';
+        Plot_Function(P.Target_x, P.Target_y, P);
+        hold on;
 
     end
 

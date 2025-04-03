@@ -15,7 +15,7 @@ function [SS] = Calculate_Starship_Budget(C, MTV, SS)
     
     % [kg] Starship Operating Empty Weight (Dry Weight)
     SS.OEW = (SS.Istr*SS.Kw*SS.Spln + (SS.TW0*SS.WR/SS.E_TW)*MTV.Wpay + SS.Cun) / ...
-             (1/(1 + C.mua) - C.fsys - (SS.TW0)*SS.WR/SS.E_TW);
+             (1/(1 + C.mua) - SS.fsys - (SS.TW0)*SS.WR/SS.E_TW);
     
     % Weight and Vol Budgets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

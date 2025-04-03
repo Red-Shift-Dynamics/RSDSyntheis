@@ -15,7 +15,7 @@ function [SH] = Calculate_Superheavy_Budget(C, MTV, SH, SS)
     
     % [kg] Superheavy Operating Empty Weight (Dry Weight)
     SH.OEW = (SH.Istr*SH.Kw*SH.Spln + SH.Cun + C.ksup*(SS.TOGW)) / ...
-             (1/(1 + C.mua) - C.fsys - (SH.TW0)*SH.WR/SH.E_TW);
+             (1/(1 + C.mua) - SH.fsys - (SH.TW0)*SH.WR/SH.E_TW);
     
     % Weight and Vol Budgets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

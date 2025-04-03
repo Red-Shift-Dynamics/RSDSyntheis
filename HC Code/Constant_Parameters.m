@@ -2,37 +2,30 @@
 function [C, SS, SH] = Constant_Parameters()
 
     % [% -> dec] Margin on Inert Weight
-    C.mua = 14 / 100;
-
-    % Variable Systems Weight
-    C.fsys = 0.113615;
+    C.mua = 16 / 100;
 
     % [(ton -> kg)/m^3] Payload Density
     C.rho_pay = (100 * 1000) / 664.0246163; 
-    %C.rho_pay = (15 * 1000) / 664.0246163; 
-    %C.rho_pay = (60 * 1000) / 664.0246163;
 
     % Support Weight Coeff - Hot Stage
-    %C.ksup = 0.05;
-    C.ksup = 0.013;     %Updated 2/25 (with assumed 20t hot staging ring)
+    C.ksup = 0.013;                     % Updated 2/25 (with assumed 20t hot staging ring)
 
     % Starship Constant Parameters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    % Variable Systems Weight - Starship
+    SS.fsys = 0.14221;                  % Updated 3/22
 
     % [kg/m^2] Structural Index - Starship 
-    SS.Istr = 28.3008;      % ~ FROM JASON ~
+    SS.Istr = 41;                       % ~ Sokol ~
 
     % [Ton -> kg] Constant Unmammed Systems Weight - Starship 
-    SS.Cun = .928 * 1000;
-
-    % [(Ton -> kg)/person] Unmanned Systems Specific Weight Coeff - Starship 
-    SS.fmnd = 0.485 * 1000;
+    SS.Cun = (0.928 + 5) * 1000;        % Updated 3/22 - 5t extra for thermal systems
 
     % Systems Volume Coeff - Starship 
     SS.kvs = 0.018;
 
     % Void Volume Coeff - Starship 
-    SS.kvv = 0.12;
-    %SS.kvv = 0.05;      % JUSTIFY VALUE
+    SS.kvv = 0.05;                      % JUSTIFY VALUE
 
     % [m^3] Unmanned Systems Volume Coeff - Starship 
     SS.Vun = 5;
@@ -47,30 +40,37 @@ function [C, SS, SH] = Constant_Parameters()
     SS.rho_ppl = 892.84;
 
     % [Mton -> kg] Sealevel Thrust - Starship
-    SS.ET0 = 258 * 1000;
+    % SS.ET0 = 258 * 1000;
+    SS.ET0 = 244 * 1000;                % Average 3/22
 
     % Engine Thrust to Weight - Starship 
-    SS.E_TW = 116.0020271;              % Updated - 2/25
+    % SS.E_TW = 149.5;                  % Updated 3/9
+    SS.E_TW = 145.302;                  % Average 3/22 
     
     % [int#] # Engines - Starship
     SS.N_eng = 6;
 
     % Superheavy Constants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
-    % [kg/m^2] Structural Index - Superheavy
-    %SH.Istr = 95.5331;      % ~ FROM JASON ~
-    SH.Istr = 75;
+    % Variable Systems Weight - Starship
+    SH.fsys = 0.08512;                  % Updated 3/22
 
-    % [Ton -> kg] Constant Unmammed Systems Weight - Full Stack
-    SH.Cun = .304 * 1000;
+    % [kg/m^2] Structural Index - Superheavy
+    % SH.Istr = 95.5331;                % ~ FROM JASON ~
+    % SH.Istr = 75;
+    % SH.Istr = 93;                     % ~ Sokol ~ 3/2
+    SH.Istr = 82;                       % ~ Sokol ~ 3/3
+
+    % [Ton -> kg] Constant Unmammed Systems Weight - Superheavy
+    SH.Cun = (.304 + 12) * 1000;        % Updated 3/22 - 12t for Grid Fins
     
-    % Systems Volume Coeff - Full Stack
+    % Systems Volume Coeff - Superheavy
     SH.kvs = 0.018;
     
-    % Void Volume Coeff - Full Stack
-    SH.kvv = SS.kvv;
+    % Void Volume Coeff - Superheavy
+    SH.kvv = 0.05;
 
-    % [m^3] Unmanned Systems Volume Coeff - Full Stack
+    % [m^3] Unmanned Systems Volume Coeff - Superheavy
     SH.Vun = 5;
 
     % [m^3/(Ton -> kg)] Engine Volume Coeff - Superheavy
@@ -89,7 +89,7 @@ function [C, SS, SH] = Constant_Parameters()
     SH.ET0 = 230 * 1000;
     
     % Engine Thrust to Weight - Superheavy 
-    SH.E_TW = 141.1042945;          % Updated - 2/25
+    SH.E_TW = 141.1042945;              % Updated - 2/25
 
     % [int#] # Engines - Superheavy
     SH.N_eng = 33;
@@ -98,6 +98,13 @@ end
 
 %% ~~~
 %}
+    
+    % % Variable Systems Weight
+    % C.fsys = 0.113615;
+
+
+    % % [(Ton -> kg)/person] Crew Systems Specific Weight Coeff - Starship 
+    % SS.fmnd = 0.485 * 1000;        
 
         % [(Ton -> kg)/Person] Crew Member Specific Weight
         % C.fcrew = 0.14 * 1000;    %textbook value
