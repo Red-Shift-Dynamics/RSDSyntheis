@@ -37,7 +37,7 @@ SS.Spln.Cone = R * SS.H_Nose / 2;
 SS.Swet.Cone = pi * R * sqrt(R^2 + SS.H_Nose^2);
 
 % [m^3] Cone - Volume
-SS.V.Cone = pi * R^2 * SS.H_Nose / 3;
+SS.V.Cone = pi * D^2 * SS.H_Nose / 6;
 
 % Fuselage ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
