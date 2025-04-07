@@ -153,7 +153,7 @@ for a = 1: 1: length(Wpay)
                 
 		        % Puts data in to table thats easier to read
 		        % Define the table column names
-		        columnNames = {'Wpay (Ton)',    'v_sep',         'SS_tau', ...
+		        columnNames = {   'Wpay (Ton)',         'v_sep',        'SS_tau', ...
 						       'SS_TOGW (Ton)', 'SS_Spln (m^2)', 'SS_Swet (m^2)', 'SS_OWEw (kg)', 'SS_OWEv (kg)', 'SS_OEW (Ton)', 'SS_mppl (Ton)', 'SS_WR'};
 		        
 		        % Convert the numeric array to a table
@@ -167,7 +167,7 @@ for a = 1: 1: length(Wpay)
                 Vehicle.SS(VehicleNo) = SSi;
     
 		        % Define the table column names
-		        columnNames = {'Wpay',    'v_sep',   'SS_tau', ...
+		        columnNames = {   'Wpay',   'v_sep',  'SS_tau', ...
 						       'SS_TOGW', 'SS_Spln', 'SS_Swet', 'SS_OWEw', 'SS_OWEv', 'SS_OEW', 'SS_mppl'};
     
 		        % Convert the numeric array to a table
