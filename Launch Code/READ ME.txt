@@ -1,5 +1,8 @@
 Starship Launch Code
 
+CODE IS SET TO STARSHIP FLIGHT 7 BY DEFAULT
+Running LaunchSimulation should reach 185 km orbit with 12.5 t payload
+
 There are two LaunchConstants files:
 RealLaunchConstants is the stuff for flight 7
 LaunchConstants is the stuff for converged solution
