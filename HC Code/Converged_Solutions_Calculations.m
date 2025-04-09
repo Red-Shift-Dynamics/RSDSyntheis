@@ -5,9 +5,9 @@ clear all, clc, close all, format compact, format longG, tic;
 
 % Imported Data File
 load('Reduced Data.mat');
-VehicleData       = Reduce_Data;        clear Reduce_Data
-VehicleChartTable = Reduce_Chart;       clear Reduce_Chart
-VehicleNo = length(VehicleData.Wpay);
+VehicleData       = Reduce_Data;                clear Reduce_Data
+VehicleChartTable = Reduce_Chart;               clear Reduce_Chart
+VehicleNo         = length(VehicleData.Wpay);
 
 %% Vehicle Calculations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

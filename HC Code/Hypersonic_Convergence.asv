@@ -133,6 +133,11 @@ for a = 1: 1: length(Wpay)
                 % disp('Bad SS Converge')
                 % SSi_OEW = SSi.OEW
 
+            % % elseif 3000 < SSi.TOGW / 1000
+            % % 
+            % %     disp('3000 MTon < SS.TOGW')
+            % %     SS_TOGW = SSi.TOGW / 1000
+
             elseif Converge_SH == false
         
                 % [int#] Creates Vehicle Counter
@@ -198,6 +203,11 @@ for a = 1: 1: length(Wpay)
 
                         % SHi_OEW = SHi.OEW
                         % disp('Bad SH Converge')
+
+                    % % elseif 5000 < SHi.TOGW / 1000
+                    % % 
+                    % %     % SH_TOGW = SHi.TOGW / 1000
+                    % %     % disp('3000 MTon < SH.TOGW')
 
                     else
                         

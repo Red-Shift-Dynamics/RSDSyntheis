@@ -32,21 +32,10 @@ function [C, SS, SH] = Constant_Parameters()
 
     % [m^3/(Ton -> kg)] Engine Volume Coeff - Starship
     SS.kve = 0.005 / 1000;
-
-    % [s]Specific impulse of Vacuum optimized Raptor at Vacuum
-    SS.IspRVAC = 380;
     
     % [g/L = kg/m^3] Propellant Density - Starship
     SS.rho_ppl = 892.84;
 
-    % [Mton -> kg] Sealevel Thrust - Starship
-    % SS.ET0 = 258 * 1000;
-    SS.ET0 = 244 * 1000;                % Average 3/22
-
-    % Engine Thrust to Weight - Starship 
-    % SS.E_TW = 149.5;                  % Updated 3/9
-    SS.E_TW = 145.302;                  % Average 3/22 
-    
     % [int#] # Engines - Starship
     SS.N_eng = 6;
 
@@ -75,25 +64,61 @@ function [C, SS, SH] = Constant_Parameters()
 
     % [m^3/(Ton -> kg)] Engine Volume Coeff - Superheavy
     SH.kve = 0.005 / 1000;
-    
-    % [s]Raptor 2 ISP at Sea Level
-    SH.IspSL = 347;
-    
-    % [s]Raptor 2 ISP in Vacuum
-    SH.IspVAC = 356;
 
     % [kg/m^3] Propellant Density - Superheavy
     SH.rho_ppl = SS.rho_ppl;
     
-    % [Mton -> kg] Sealevel Thrust - Superheavy
-    SH.ET0 = 230 * 1000;
-    
-    % Engine Thrust to Weight - Superheavy 
-    SH.E_TW = 141.1042945;              % Updated - 2/25
-
     % [int#] # Engines - Superheavy
     SH.N_eng = 33;
-    
+
+    % Raptor 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%{
+    % [s]Specific impulse of Vacuum optimized Raptor at Vacuum
+    SS.IspRVAC = 380;               % Raptor 2
+
+    % [Mton -> kg] Sealevel Thrust - Starship
+    % SS.ET0 = 258 * 1000;
+    SS.ET0 = 244 * 1000;                % Average 3/22
+
+    % Engine Thrust to Weight - Starship 
+    % SS.E_TW = 149.5;                  % Updated 3/9
+    SS.E_TW = 145.302;                  % Average 3/22 
+
+    % [s]Raptor 2 ISP at Sea Level
+    SH.IspSL = 347;
+
+    % [s]Raptor 2 ISP in Vacuum
+    SH.IspVAC = 356;
+
+    % [Mton -> kg] Sealevel Thrust - Superheavy
+    SH.ET0 = 230 * 1000;
+
+    % Engine Thrust to Weight - Superheavy 
+    SH.E_TW = 141.1042945;              % Updated - 2/25
+%}
+    % Raptor 3 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+    % [s]Specific impulse of Vacuum optimized Raptor at Vacuum
+    SS.IspRVAC = 380;         
+
+    % [Mton -> kg] Sealevel Thrust - Starship
+    SS.ET0 = 258 * 1000;            
+
+    % Engine Thrust to Weight - Starship                 
+    SS.E_TW = (192.6 + 183.61)/2;                   % 192.6 E_TW RVAC
+
+    % [s]Raptor 3 ISP at Sea Level
+    SH.IspSL = 350;
+
+    % [s]Raptor 3 ISP in Vacuum
+    SH.IspVAC = 367;
+
+    % [Mton -> kg] Sealevel Thrust - Superheavy
+    SH.ET0 = 280 * 1000;
+
+    % Engine Thrust to Weight - Superheavy 
+    SH.E_TW = 183.61;
+%}
 end
 
 %% ~~~
