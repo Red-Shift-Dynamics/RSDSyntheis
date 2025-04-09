@@ -62,6 +62,7 @@ SS.t_AF = 0;
 % TV.FS.Swet = TV.SS.Swet + TV.SH.Swet;
 % TV.FS.V    = TV.SS.V    + TV.SH.V;
 
+
 % TV.SS.tau = TV.SS.V / TV.SS.Spln^1.5;
 % TV.FS.tau = TV.FS.V / TV.FS.Spln^1.5;
 
@@ -86,11 +87,12 @@ function [SS] = Calculate_SS_Geo(SS, FS)
 
     % Nose Cone ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    % Nose Cone Equation - Starship
+    %% Nose Cone Equation - Starship ~~~~~~~~~~~~~~~~~~~~~~~~~~
     syms x
     n = 0.6;
     SS.Cone.f(x)  = FS.D/2 * (x / SS.H_Cone)^n;
     SS.Cone.df(x) = diff(SS.Cone.f, x);
+    %% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     % [m^2] Cone - Planform Area
     SS.Spln.Cone = 2 * double(int(SS.Cone.f(x), x, 0, SS.H_Cone));
