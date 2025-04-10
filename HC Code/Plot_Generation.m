@@ -4,10 +4,11 @@ clear all, clc, close all, format compact, format longG, tic;
 [C, SS, SH] = Constant_Parameters();
 
 % Imported Data File
-load('Data.mat');           
+load('Data.mat');
 
-% SET TRUE IF FORGOTTEN TO DO SO IN HC CODE
-Reduce_Data = true;
+% Save Vehicle Data
+save('Vehicle Data.mat', ...
+     'VehicleData', 'VehicleChartTable');
 
 %% Plots ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -159,22 +160,23 @@ if Converge_SH == true
 
 end
 
+%{
 %% Data Reduction ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Reduce Error if True
 if Reduce_Data == true && Converge_SH == true
 
-    % Calculate TOGW Error
+    % [%] Calculate TOGW Error
     DATA_Error(:, 1) = abs(VehicleData.SS_TOGW/1000 - TV.SS.TOGW)/TV.SS.TOGW * 100;
     DATA_Error(:, 2) = abs(VehicleData.SH_TOGW/1000 - TV.SH.TOGW)/TV.SH.TOGW * 100;
     DATA_Error(:, 3) = abs(VehicleData.FS_TOGW/1000 - TV.FS.TOGW)/TV.FS.TOGW * 100;
     
-    % Calculate Planform Area Error
+    % [%] Calculate Planform Area Error
     DATA_Error(:, 4) = abs(VehicleData.SS_Spln - TV.SS.Spln)/TV.SS.Spln * 100;
     DATA_Error(:, 5) = abs(VehicleData.SH_Spln - TV.SH.Spln)/TV.SH.Spln * 100;
     DATA_Error(:, 6) = abs(VehicleData.FS_Spln - TV.FS.Spln)/TV.FS.Spln * 100;
     
-    % Calculate Dry Weight Error
+    % [%] Calculate Dry Weight Error
     DATA_Error(:, 7) = abs(VehicleData.SS_OEW/1000 - TV.SS.OEW)/TV.SS.OEW * 100;
     DATA_Error(:, 8) = abs(VehicleData.SH_OEW/1000 - TV.SH.OEW)/TV.SH.OEW * 100;
     DATA_Error(:, 9) = abs(VehicleData.FS_OEW/1000 - TV.FS.OEW)/TV.FS.OEW * 100;
@@ -185,7 +187,7 @@ if Reduce_Data == true && Converge_SH == true
     ERROR0 = 14;
     ERROR1 = 25;
 %}
-%
+%{
     % [%] Minimum Error
     ERROR = 8.6;
     ERROR0 = 18;
@@ -292,37 +294,6 @@ if Reduce_Data == true && Converge_SH == true
     end
 
 end
-
-%% ~~~
 %}
-%{
-
-% Payload Weight Reduction
-Reduce1 = 110 * 1000;           % [Ton -> kg]
-Reduce2 = 120 * 1000;           % [Ton -> kg]
-
-% Reduce Data
-Tempdat1 = VehicleData(VehicleData.Wpay(:, 1) == Reduce1, :);
-Tempdat2 = VehicleData(VehicleData.Wpay(:, 1) == Reduce2, :);
-Tempdat  = [Tempdat1; Tempdat2];
-
-% TOGW Reduction
-Reduce1 = TV.FS.TOGW * 1000;    % [Ton -> kg]
-tol     = 10 * 1000;            % [Ton -> kg]
-
-% Reduce Data
-Tempdat1 = Tempdat( Tempdat.FS_TOGW(:, 1)  <= Reduce1 + tol, :);
-Tempdat  = Tempdat1(Tempdat1.FS_TOGW(:, 1) >= Reduce1 - tol, :);
-
-% Spln Reduction
-Reduce1 = TV.FS.Spln;           % [m^2]
-tol     = 150;                  % [Ton -> kg]
-
-% Reduce Data
-Tempdat1 = Tempdat( Tempdat.FS_Spln(:, 1)  <= Reduce1 + tol, :);
-Tempdat  = Tempdat1(Tempdat1.FS_Spln(:, 1) >= Reduce1 - tol, :);
-
-% Save Data
-Reduced_Dat = Tempdat;
-
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %}

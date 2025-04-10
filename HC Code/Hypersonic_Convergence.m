@@ -16,9 +16,6 @@ Plot_3D = true;         % Only Works When Converge_SH == true
 % Save Data Statement
 Save_Data = true;
 
-% Reduce Data Statement
-Reduce_Data = false;
-
 % Plot Target Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Target Values
