@@ -47,7 +47,7 @@ use this code, Dr. Benavides may be contacted at aea.engineer.com.
 ====================================================================================================
 %}
 
-function C = LaunchConstants
+function C = Rap2ConvLaunchConstants
 
     C.UTC = [2025, 1, 15, 16, 17, 18];
     % [yyyy,MM,dd,HH,mm,ss]Coordinated universal time at mission commencement.

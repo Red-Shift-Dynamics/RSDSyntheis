@@ -47,7 +47,10 @@ use this code, Dr. Benavides may be contacted at aea.engineer.com.
 ====================================================================================================
 %}
 
-function C = RealLaunchConstants
+function C = Rap3ConvLaunchConstants
+
+    C.CombTable = load('Reduced Vehicle Data.mat','CombTable');
+    % []Load converged vehicles;
 
     C.UTC = [2025, 1, 15, 16, 17, 18];
     % [yyyy,MM,dd,HH,mm,ss]Coordinated universal time at mission commencement.
@@ -107,10 +110,18 @@ function C = RealLaunchConstants
 
     %-----------------------------------------------------------------------------------------------
 
-    C.S1.Me = 200 * 1000;
+    C.S1.mdot = -807.614398000778*33;
+    % [kg/s]Stage 1 mass flow rate.
+
+    C.S2.mdot = -807.614398000778*6;
+    % [kg/s]Stage 2 mass flow rate.
+
+    %-----------------------------------------------------------------------------------------------
+
+    C.S1.Me = 312135.529576238;
     % [kg]Stage 1 empty mass.
 
-    C.S1.Mp = 3650 * 1000;
+    C.S1.Mp = 3083448.13614744;
     % [kg]Stage 1 propellant mass.
 
     C.S1.Ispo = 347;
@@ -119,13 +130,13 @@ function C = RealLaunchConstants
     C.S1.Ispf = 364;
     % [s]Stage 1 specific impulse in a vacuum.
 
-    C.S1.To = 7590 * 9.80665;
+    C.S1.To = 2746 * 33;
     % [kN]Stage 1 thrust at sea level.
 
-    C.S1.Tf = 78540;
+    C.S1.Tf = 2880 * 33;
     % [kN]Stage 1 thrust in a vacuum.
 
-    C.S1.tb = 153;
+    C.S1.tb = (C.S1.Mp - (C.S1.Me + C.S1.Mp) / 10) / -C.S1.mdot;
     % [s]Stage 1 burn time.
 
     C.S1.Tdot = (C.S1.Tf - C.S1.To) / C.S1.tb;
@@ -133,10 +144,10 @@ function C = RealLaunchConstants
 
     %-----------------------------------------------------------------------------------------------
 
-    C.S2.Me = 135.801 * 1000;
+    C.S2.Me = 135134.036311905;
     % [kg]Stage 2 empty mass.
 
-    C.S2.Mp = 1500 * 1000;
+    C.S2.Mp = 1400903.25597908;
     % [kg]Stage 2 propellant mass.
 
     C.S2.Isp = 380;
@@ -145,7 +156,7 @@ function C = RealLaunchConstants
     C.S2.T = 1500*9.80665;
     % [kN]Stage 2 thrust.
 
-    C.S2.tb = 354;
+    C.S2.tb = C.S2.Mp / -C.S2.mdot;
     % [s]Stage 2 burn time.
 
     %-----------------------------------------------------------------------------------------------
@@ -153,8 +164,7 @@ function C = RealLaunchConstants
     C.S3.Mplf = 0;
     % [kg]Payload fairing mass.
 
-    %C.S3.Mpay = 110*1000; % Test Value
-    C.S3.Mpay = 12.5*1000; % Real  Flight 7 Value
+    C.S3.Mpay = 100*1000;
     % [kg]Payload mass.
 
     %-----------------------------------------------------------------------------------------------
@@ -196,18 +206,6 @@ function C = RealLaunchConstants
 
     C.M(7) = C.S2.Me + C.S3.Mpay;
     % [kg]Rocket mass at Stage 2 jettison.
-
-    %-----------------------------------------------------------------------------------------------
-
-    C.S1.mdot = -650*33;
-    
-    %(C.M(2) - C.M(1)) / C.S1.tb;
-    % [kg/s]Stage 1 mass flow rate.
-
-    C.S2.mdot = -650*6;
-    
-    %(C.M(6) - C.M(4)) / C.S2.tb;
-    % [kg/s]Stage 2 mass flow rate.
 
     %-----------------------------------------------------------------------------------------------
 

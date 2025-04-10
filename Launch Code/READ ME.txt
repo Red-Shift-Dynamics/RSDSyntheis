@@ -27,4 +27,7 @@ Guidance File
 				       just make sure the final angle t/number = about 55 deg
 
 	
-	
+
+Drag
+M = .5 		0.0173
+M = 	

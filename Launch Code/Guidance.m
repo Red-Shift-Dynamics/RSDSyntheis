@@ -51,11 +51,11 @@ use this code, Dr. Benavides may be contacted at aea.engineer.com.
 
 function T = Guidance(t,R,V,Tmag)
 
-    if (t <= 150)
+    if (t <= 120)
 %150 Real Flight 7
 
-        %theta = deg2rad(t / 1.9);
-        theta = deg2rad(t / 2.71); %Real Flight 7
+        theta = deg2rad(t / 2.2);
+        %theta = deg2rad(t / 2.71); %Real Flight 7
         % [rad]Thrust angle.
 
         H = cross(R,V);
@@ -73,7 +73,7 @@ function T = Guidance(t,R,V,Tmag)
         T = Tmag * (cos(theta) * Rhat + sin(theta) * That);
         % [kN]Thrust force in ECI coordinates.
 
-    elseif (t > 150) && (t <= 370)
+    elseif (t > 120) && (t <= 370)
 
         T = Tmag * V / norm(V);
         % [kN]Thrust force in ECI coordinates.

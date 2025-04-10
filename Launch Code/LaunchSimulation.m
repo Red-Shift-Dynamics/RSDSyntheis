@@ -80,8 +80,9 @@ fprintf(Equal);
 
 %% LOAD CONSTANTS:
 
-%C = LaunchConstants;
-C = RealLaunchConstants;
+%C = Rap2ConvLaunchConstants;
+%C = Ship7LaunchConstants;
+C = Rap3ConvLaunchConstants;
 % []Loads the launch problem constants and parameters.
 
 %% NUMERICAL INTEGRATION:
