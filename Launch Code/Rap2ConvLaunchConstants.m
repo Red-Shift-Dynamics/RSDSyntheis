@@ -106,6 +106,17 @@ function C = Rap2ConvLaunchConstants
     % [km]Rocket range WRT the Earth at orbit insertion.
 
     %-----------------------------------------------------------------------------------------------
+   C.S1.mdot = -663*33;
+    
+    %(C.M(2) - C.M(1)) / C.S1.tb;
+    % [kg/s]Stage 1 mass flow rate.
+
+    C.S2.mdot = -663*6;
+    
+    %(C.M(6) - C.M(4)) / C.S2.tb;
+    % [kg/s]Stage 2 mass flow rate.
+
+    %-----------------------------------------------------------------------------------------------
 
     C.S1.Me = 329.844 * 1000;
     % [kg]Stage 1 empty mass.
@@ -119,17 +130,18 @@ function C = Rap2ConvLaunchConstants
     C.S1.Ispf = 364;
     % [s]Stage 1 specific impulse in a vacuum.
 
-    C.S1.To = 2746 * 33;
+    C.S1.To = 7590 * 9.80665;
     % [kN]Stage 1 thrust at sea level.
 
-    C.S1.Tf = 2880 * 33;
+    C.S1.Tf = 78540;
     % [kN]Stage 1 thrust in a vacuum.
 
-    C.S1.tb = 119;
+    C.S1.tb = (C.S1.Mp - (C.S1.Me + C.S1.Mp) / 10) / -C.S1.mdot;
     % [s]Stage 1 burn time.
 
-    C.S1.Tdot = (C.S1.Tf - C.S1.To) / C.S1.tb;
+    C.S1.Tdot = (C.S1.Tf - C.S1.To) / 89;
     % [kN/s]Stage 1 thrust rate.
+    % Time taken from starship flight 6 time to 20 km
 
     %-----------------------------------------------------------------------------------------------
 
@@ -145,7 +157,7 @@ function C = Rap2ConvLaunchConstants
     C.S2.T = 1500*9.80665;
     % [kN]Stage 2 thrust.
 
-    C.S2.tb = 280;
+    C.S2.tb = C.S2.Mp / -C.S2.mdot;
     % [s]Stage 2 burn time.
 
     %-----------------------------------------------------------------------------------------------
@@ -155,7 +167,9 @@ function C = Rap2ConvLaunchConstants
 
     C.S3.Mpay = 110*1000;
     % [kg]Payload mass.
-
+    
+    C.TOGW = (C.S1.Me + C.S1.Mp + C.S2.Me + C.S2.Mp + C.S3.Mpay) / 1000;
+    % [mt]Vehicle take off gross weight.
     %-----------------------------------------------------------------------------------------------
 
     C.t = zeros(1,7);
@@ -181,7 +195,7 @@ function C = Rap2ConvLaunchConstants
     C.M(1) = C.S1.Me + C.S1.Mp + C.S2.Me + C.S2.Mp + C.S3.Mpay;
     % [kg]Rocket mass at launch.
 
-    C.M(2) = C.S1.Me + 329.844 * 100 + C.S2.Me + C.S2.Mp + C.S3.Mpay;
+    C.M(2) = C.S1.Me + (C.S1.Me + C.S1.Mp) / 10 + C.S2.Me + C.S2.Mp + C.S3.Mpay;
     % [kg]Rocket mass at MECO.
 
     C.M(3) = C.S2.Me + C.S2.Mp + C.S3.Mpay;
@@ -195,18 +209,6 @@ function C = Rap2ConvLaunchConstants
 
     C.M(7) = C.S2.Me + C.S3.Mpay;
     % [kg]Rocket mass at Stage 2 jettison.
-
-    %-----------------------------------------------------------------------------------------------
-
-    C.S1.mdot = -800*33;
-    
-    %(C.M(2) - C.M(1)) / C.S1.tb;
-    % [kg/s]Stage 1 mass flow rate.
-
-    C.S2.mdot = -800*6;
-    
-    %(C.M(6) - C.M(4)) / C.S2.tb;
-    % [kg/s]Stage 2 mass flow rate.
 
     %-----------------------------------------------------------------------------------------------
 

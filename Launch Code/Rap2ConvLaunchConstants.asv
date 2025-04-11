@@ -47,10 +47,7 @@ use this code, Dr. Benavides may be contacted at aea.engineer.com.
 ====================================================================================================
 %}
 
-function C = Rap3ConvLaunchConstants
-
-    C.CombTable = load('Reduced Vehicle Data.mat','CombTable');
-    % []Load converged vehicles;
+function C = Rap2ConvLaunchConstants
 
     C.UTC = [2025, 1, 15, 16, 17, 18];
     % [yyyy,MM,dd,HH,mm,ss]Coordinated universal time at mission commencement.
@@ -109,21 +106,22 @@ function C = Rap3ConvLaunchConstants
     % [km]Rocket range WRT the Earth at orbit insertion.
 
     %-----------------------------------------------------------------------------------------------
-
-    C.S1.mdot = -807.614398000778*33;
+   C.S1.mdot = -650*33;
+    
+    %(C.M(2) - C.M(1)) / C.S1.tb;
     % [kg/s]Stage 1 mass flow rate.
 
-    C.S2.mdot = -807.614398000778*6;
+    C.S2.mdot = -650*6;
+    
+    %(C.M(6) - C.M(4)) / C.S2.tb;
     % [kg/s]Stage 2 mass flow rate.
 
     %-----------------------------------------------------------------------------------------------
 
-    %C.S1.Me = 312135.529576238; % 100 Pay
-    C.S1.Me = 324152.502950675; % 110 Pay
+    C.S1.Me = 329.844 * 1000;
     % [kg]Stage 1 empty mass.
 
-    %C.S1.Mp = 3083448.13614744; % 100 Pay
-    C.S1.Mp = 3474509.77688032; % 110 Pay
+    C.S1.Mp = 3466.251 * 1000;
     % [kg]Stage 1 propellant mass.
 
     C.S1.Ispo = 347;
@@ -132,10 +130,10 @@ function C = Rap3ConvLaunchConstants
     C.S1.Ispf = 364;
     % [s]Stage 1 specific impulse in a vacuum.
 
-    C.S1.To = 2746 * 33;
+    C.S1.To = 7590 * 9.80665;
     % [kN]Stage 1 thrust at sea level.
 
-    C.S1.Tf = 2880 * 33;
+    C.S1.Tf = 78540;
     % [kN]Stage 1 thrust in a vacuum.
 
     C.S1.tb = (C.S1.Mp - (C.S1.Me + C.S1.Mp) / 10) / -C.S1.mdot;
@@ -147,18 +145,16 @@ function C = Rap3ConvLaunchConstants
 
     %-----------------------------------------------------------------------------------------------
 
-    %C.S2.Me = 135134.036311905; % 100 Pay
-    C.S2.Me = 136582.240908816; % 110 Pay
+    C.S2.Me = 135.801 * 1000;
     % [kg]Stage 2 empty mass.
 
-    %C.S2.Mp = 1400903.25597908; % 100 Pay
-    C.S2.Mp = 1379457.76040784; % 110 Pay
+    C.S2.Mp = 1419.172 * 1000;
     % [kg]Stage 2 propellant mass.
 
     C.S2.Isp = 380;
     % [s]Stage 2 specific impulse.
 
-    C.S2.T = 2880 * 3 + 3045 * 3;
+    C.S2.T = 1500*9.80665;
     % [kN]Stage 2 thrust.
 
     C.S2.tb = C.S2.Mp / -C.S2.mdot;
@@ -169,12 +165,9 @@ function C = Rap3ConvLaunchConstants
     C.S3.Mplf = 0;
     % [kg]Payload fairing mass.
 
-    %C.S3.Mpay = 100*1000; % 100 Pay
-    C.S3.Mpay = 110*1000; % 110 Pay
+    C.S3.Mpay = 110*1000;
     % [kg]Payload mass.
 
-    C.TOGW = (C.S1.Me + C.S1.Mp + C.S2.Me + C.S2.Mp + C.S3.Mpay) / 1000;
-    % [mt]Vehicle take off gross weight.
     %-----------------------------------------------------------------------------------------------
 
     C.t = zeros(1,7);

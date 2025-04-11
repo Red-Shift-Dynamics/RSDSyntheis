@@ -51,15 +51,15 @@ use this code, Dr. Benavides may be contacted at aea.engineer.com.
 
 function T = Guidance(t,R,V,Tmag)
 
-t_pm = 100; %raptor 3 110 pay
-%t_pm = 100; %raptor 3 100 pay
-%t_pm = 150;  %Real Flight 7
-%t_pm = 160;   %raptor 2
+t_pm = 100;
 % [s]Time of pitch maneuver
 
     if (t <= t_pm)  %raptor 3 110
-    
-        theta = deg2rad(t / (t_pm / 55)); %raptor 3 100 pay
+    %if (t <= 100)  %raptor 3 100 p1y
+    %if (t <= 150)  %Real Flight 7
+    %if (t <= 160)   %raptor 2
+
+        theta = deg2rad(t / 1.64); %raptor 3 100 pay
         %theta = deg2rad(t / 1.8); %raptor 3 100 pay
         %theta = deg2rad(t / 2.71); %Real Flight 7
         %theta = deg2rad(t / 2.87); %raptor 2

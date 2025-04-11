@@ -182,7 +182,7 @@ function C = Ship7LaunchConstants
     C.M(1) = C.S1.Me + C.S1.Mp + C.S2.Me + C.S2.Mp + C.S3.Mpay;
     % [kg]Rocket mass at launch.
 
-    C.M(2) = C.S1.Me + 329.844 * 100 + C.S2.Me + C.S2.Mp + C.S3.Mpay;
+    C.M(2) = C.S1.Me + (C.S1.Me + C.S1.Mp) / 10 + C.S2.Me + C.S2.Mp + C.S3.Mpay;
     % [kg]Rocket mass at MECO.
 
     C.M(3) = C.S2.Me + C.S2.Mp + C.S3.Mpay;

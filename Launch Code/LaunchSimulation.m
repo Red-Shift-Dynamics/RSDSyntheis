@@ -107,10 +107,10 @@ PlotAltitude(S,C);
 PlotSpeed(S,C);
 % []Plots the rocket's speeds as a function of time.
 
-dv = PlotMass(S,C);
+dv = PlotMass(S,C)
 % []Plots the rocket's mass as a function of time.
 
-%PlotThrust(S,C);
+PlotThrust(S,C);
 % []Plots the rocket's thrust as a function of time.
 
 %PlotOrbit(S,'Black',Color);

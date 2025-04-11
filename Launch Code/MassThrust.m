@@ -63,8 +63,17 @@ function [m,T] = MassThrust(t,R,V,hcg,C)
         m = C.M(1) + C.S1.mdot * t;
         % [kg]Rocket mass.
 
-        Tmag = C.S1.To + C.S1.Tdot * t;
-        % [kg]Rocket thrust.
+            if hcg < 20
+                
+                Tmag = C.S1.To + C.S1.Tdot * t;
+                % [kg]Rocket thrust.
+            
+            else
+                
+                Tmag = C.S1.Tf;
+                % [kg]Rocket thrust.
+            
+            end
 
     elseif (t > C.t(2)) && (t < C.t(3))
 
