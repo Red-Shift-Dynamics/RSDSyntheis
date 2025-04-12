@@ -114,6 +114,12 @@ function S = LaunchPropagate(to,So,C)
         S.v(k) = norm(S.V(:,k));
         % [km/s]Speed WRT the Earth.
 
+        dSdt = LaunchEom(S.t(k),S.S(:,k),C);
+        % [m/s,m/s^2]Evaluates the equations of motion.
+
+        S.a(k) = norm(dSdt(4:6));
+        % [m/s^2]Vehicle acceleration relative to the ground station in ENZ coordinates.
+        
         S.h(k) = S.r(k) - C.Re;
         % [km]Altitude above mean equator.
 
@@ -136,7 +142,7 @@ function S = LaunchPropagate(to,So,C)
 
     %-----------------------------------------------------------------------------------------------
 
-    S = orderfields(S,{'UTC','JD','t','h','r','v','Lat','Long','R','V','S','Coe'});
+    S = orderfields(S,{'UTC','JD','t','h','r','v','a','Lat','Long','R','V','S','Coe'});
     % []Reorders the output structure fields.
 
 end

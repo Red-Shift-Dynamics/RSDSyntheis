@@ -128,7 +128,7 @@ function [m,T] = MassThrust(t,R,V,hcg,C)
 
     %-----------------------------------------------------------------------------------------------
 
-    T = Guidance(t,R,V,Tmag);
+    T = Guidance(t,R,V,Tmag,C);
     % [kN]Thurst force in ECI coordinates.
 
 end

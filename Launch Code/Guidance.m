@@ -49,9 +49,12 @@ use this code, Dr. Benavides may be contacted at aea.engineer.com.
 ====================================================================================================
 %}
 
-function T = Guidance(t,R,V,Tmag)
+function T = Guidance(t,R,V,Tmag,C)
 
-t_pm = 100; %raptor 3 110 pay
+t_pm = C.S1.tb;
+t_g0 = C.t(6)-C.t(3);
+%t_pm = 118; %raptor 3 130 pay
+%t_pm = 100; %raptor 3 110 pay
 %t_pm = 100; %raptor 3 100 pay
 %t_pm = 150;  %Real Flight 7
 %t_pm = 160;   %raptor 2
@@ -59,7 +62,7 @@ t_pm = 100; %raptor 3 110 pay
 
     if (t <= t_pm)  %raptor 3 110
     
-        theta = deg2rad(t / (t_pm / 55)); %raptor 3 100 pay
+        theta = deg2rad(t / (t_pm / 55)); 
         %theta = deg2rad(t / 1.8); %raptor 3 100 pay
         %theta = deg2rad(t / 2.71); %Real Flight 7
         %theta = deg2rad(t / 2.87); %raptor 2
@@ -80,13 +83,13 @@ t_pm = 100; %raptor 3 110 pay
         T = Tmag * (cos(theta) * Rhat + sin(theta) * That);
         % [kN]Thrust force in ECI coordinates.
 
-    elseif (t > t_pm) && (t <= 370)
-
+    elseif (t > t_pm) && (t <= t_g0)
+                            %370 original
         T = Tmag * V / norm(V);
         % [kN]Thrust force in ECI coordinates.
 
-    elseif (t > 370)
-
+    elseif (t > t_g0)
+                %370 original
         Rhat = R / norm(R);
         %[]Radial direction WRT the Earth in ECI coordinates.
 

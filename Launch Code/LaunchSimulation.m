@@ -82,7 +82,8 @@ fprintf(Equal);
 
 %C = Rap2ConvLaunchConstants;
 %C = Ship7LaunchConstants;
-C = Rap3ConvLaunchConstants;
+%C = Rap3ConvLaunchConstants;
+C = Rap3_130_LaunchConstants; % 130 pay
 % []Loads the launch problem constants and parameters.
 
 %% NUMERICAL INTEGRATION:
@@ -98,8 +99,11 @@ S = LaunchPropagate(to,So,C);
 
 %% PLOT RESULTS:
 
-Color = {'y'};
-% []Mission segment color codes.
+GR = [218, 165, 2] / 255;
+% []Goldenrod RGB color code.
+
+FB = [178, 34, 34] / 255;
+% []Firebrick RGB color code.
 
 PlotAltitude(S,C);
 % []Plots the rocket's altitude above mean equator as a function of time.
@@ -113,16 +117,28 @@ dv = PlotMass(S,C)
 PlotThrust(S,C);
 % []Plots the rocket's thrust as a function of time.
 
-%PlotOrbit(S,'Black',Color);
+PlotDynamicPressure(S,C);
+% []Plots Rocket's dynamic pressure.
+
+PlotVelocity(S,C);
+
+PlotAcceleration(S,C);
+
+PlotFlightPath(S,C);
+
+Color = {FB,GR};
+% []Mission segment color codes.
+
+PlotOrbit(S,'Black',Color);
 % []Plots the rocket's orbit WRT the Earth in ECI coordinates.
 
-%PlotGroundTrack(S,'Black',Color);
+PlotGroundTrack(S,'Black',Color);
 % []Plots the rocket's ground track as a function of time.
 
 Color = {'k'};
 % []Mission segment color codes.
 
-%PlotCoe(S,'Minutes','Earth Radii',Color);
+PlotCoe(S,'Minutes','Earth Radii',Color);
 % []Plots the rocket's classical orbital elements as a function of time.
 
 %% SAVE LAUNCH DATA:
