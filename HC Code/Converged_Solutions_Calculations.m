@@ -1,13 +1,17 @@
 clear all, clc, close all, format compact, format longG, tic;
 %% Imports ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 % Constant Parameters
 [C, SS, SH] = Constant_Parameters();
 
 % Imported Data File
-load('Reduced Data.mat');
-VehicleData       = Reduce_Data;                clear Reduce_Data
-VehicleChartTable = Reduce_Chart;               clear Reduce_Chart
-VehicleNo         = length(VehicleData.Wpay);
+load('Reduced Vehicle Data.mat');
+
+% VehicleData = CombTable.Wpay;
+% DATA_Error  = CombTable.WpayE;
+VehicleData = CombTable.v_sep;
+DATA_Error  = CombTable.v_sepE;
+VehicleNo   = length(VehicleData.Wpay);
 
 %% Vehicle Calculations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -87,6 +91,41 @@ for i = 1: 1: VehicleNo
     % [m^3] Void Volume - Superheavy
     SH.Vvv(i, 1) = SH.kvv * SH.Vtot(i);
 
+    % Full Stack Calculated Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    % Sea Level Thrust to Weight - Full Stack
+    FS.TW0(i, 1) = (SH.N_eng * SH.ET0) / VehicleData.FS_TOGW(i);
+    
+    % [kg] Structure Weight - Full Stack
+    FS.Wstr(i, 1) = SH.Wstr(i) + SS.Wstr(i);
+    
+    % [kg] Engine Weight - Full Stack
+    FS.Weng(i, 1) = SH.Weng(i) + SS.Weng(i);
+    
+    % [kg] Constant Systems Weight - Full Stack
+    FS.Csys(i, 1) = SH.Csys(i) + SS.Csys(i);
+    
+    % [kg] Systems Weight - Full Stack
+    FS.Wsys(i, 1) = SH.Wsys(i) + SS.Wsys(i);
+    
+    % [m^3] Total Volume - Full Stack
+    FS.Vtot(i, 1) = SH.Vtot(i) + SS.Vtot(i);
+    
+    % [m^3] Fix Systems Volume - Full Stack
+    FS.Vfix(i, 1) = SH.Vfix(i) + SS.Vfix(i);
+    
+    % [m^3] Propellant Volume - Full Stack
+    FS.Vppl(i, 1) = SH.Vppl(i) + SS.Vppl(i);
+    
+    % [m^3] Systems Volume - Full Stack
+    FS.Vsys(i, 1) = SH.Vsys(i) + SS.Vsys(i);
+    
+    % [m^3] Engine Volume - Full Stack
+    FS.Veng(i, 1) = SH.Veng(i) + SS.Veng(i);
+    
+    % [m^3] Void Volume - Full Stack
+    FS.Vvv(i, 1) = SH.Vvv(i) + SS.Vvv(i);
+
 end
 clear i
 
@@ -95,12 +134,17 @@ clear i
 % Save Calculated Data
 CalcData = [VehicleData.Wpay/1000, VehicleData.v_sep, VehicleData.SS_tau, VehicleData.SH_tau, VehicleData.FS_tau, ...
             SS.TW0, SS.Wstr/1000, SS.Weng/1000, SS.Wsys/1000, SS.Vtot, SS.Vfix, SS.Vppl, SS.Vsys, SS.Veng, SS.Vvv, SS.Vpay, ...
-            SH.TW0, SH.Wstr/1000, SH.Weng/1000, SH.Wsys/1000, SH.Vtot, SH.Vfix, SH.Vppl, SH.Vsys, SH.Veng, SH.Vvv,        ];
+            SH.TW0, SH.Wstr/1000, SH.Weng/1000, SH.Wsys/1000, SH.Vtot, SH.Vfix, SH.Vppl, SH.Vsys, SH.Veng, SH.Vvv, ...
+            FS.TW0, FS.Wstr/1000, FS.Weng/1000, FS.Wsys/1000, FS.Vtot, FS.Vfix, FS.Vppl, FS.Vsys, FS.Veng, FS.Vvv];
 
 % Define the table column names
 columnNames = {'Wpay (Ton)', 'v_sep (km/s)' , 'SS_tau',        'SH_tau',        'FS_tau',  ...
 		       'SS_TW0',     'SS_Wstr (Ton)', 'SS_Weng (Ton)', 'SS_Wsys (Ton)', 'SS_Vtot (m^3)', 'SS_Vfix (m^3)', 'SS_Vppl (m^3)', 'SS_Vsys (m^3)', 'SS_Veng (m^3)', 'SS_Vvv (m^3)', 'SS_Vpay (m^3)', ...
-               'SH_TW0',     'SH_Wstr (Ton)', 'SH_Weng (Ton)', 'SH_Wsys (Ton)', 'SH_Vtot (m^3)', 'SH_Vfix (m^3)', 'SH_Vppl (m^3)', 'SH_Vsys (m^3)', 'SH_Veng (m^3)', 'SH_Vvv (m^3)',                };
+               'SH_TW0',     'SH_Wstr (Ton)', 'SH_Weng (Ton)', 'SH_Wsys (Ton)', 'SH_Vtot (m^3)', 'SH_Vfix (m^3)', 'SH_Vppl (m^3)', 'SH_Vsys (m^3)', 'SH_Veng (m^3)', 'SH_Vvv (m^3)', ...
+               'FS_TW0',     'FS_Wstr (Ton)', 'FS_Weng (Ton)', 'FS_Wsys (Ton)', 'FS_Vtot (m^3)', 'FS_Vfix (m^3)', 'FS_Vppl (m^3)', 'FS_Vsys (m^3)', 'FS_Veng (m^3)', 'FS_Vvv (m^3)'};
+
+% Create   Data_Error Table with Units
+% Recreate VehicleData Table with Units
 
 % Convert the numeric array to a table
 CalculatedData = array2table(CalcData, 'VariableNames', columnNames);
@@ -110,9 +154,6 @@ writetable(CalculatedData, 'CalculatedData.txt', ...
            'Delimiter', '\t', ...
            'WriteRowNames', true);
 writetable(DATA_Error, 'DATA_Error.txt', ...
-           'Delimiter', '\t', ...
-           'WriteRowNames', true);
-writetable(VehicleChartTable, 'VehicleChartTable.txt', ...
            'Delimiter', '\t', ...
            'WriteRowNames', true);
 

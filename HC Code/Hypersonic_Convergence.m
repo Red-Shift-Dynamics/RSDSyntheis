@@ -39,27 +39,30 @@ TV.FS.Spln = TV.SS.Spln + TV.SH.Spln;   % Full Stack
 % Mission Trade Variables (MTV) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % [MTon -> kg] Payload Weight
-Wpay = [100: 10: 150] * 1000;               % Trade Values
-% Wpay = 110 * 1000;                          % Best Value
-% Wpay = 120 * 1000;                          % Best Value
+% Wpay = [100: 10: 150] * 1000;               % Trade Values
+Wpay = 125 * 1000;                          % Best Value
 % Wpay = [100: 10: 140] * 1000;               % 4 Point Vehicles Raptor 2
 
 % [m/s] Separation Velocity
-v_sep = [1300: 200: 2200];                  % Trade Values
+% v_sep = [1300: 200: 2200];                  % Trade Values
+v_sep = [1300: 50: 2200];                  % Trade Values
 % v_sep = 1400;                               % Best Value
 % v_sep = [1300: 100: 1500];                  % 4 Point Vehicles Raptor 2
 
 % Iterated Geometric Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Slenderness Parameter - Starship
-SS.tau = transpose([0.15: 0.02: 0.32]);     % Trade Values
+% SS.tau = transpose([0.15: 0.02: 0.32]);     % Trade Values
+SS.tau = transpose([0.15: 0.005: 0.32]);     % Trade Values
 % SS.tau = 0.16;                              % Best Value    
 % SS.tau = 0.22;                              % Actual Value
 % SS.tau = transpose([0.15: 0.01: 0.18]);     % 4 Point Vehicles Raptor 2
 
 % Slenderness Parameter - Superheavy
-SH.tau = transpose([0.20: 0.02: 0.38]);     % Trade Values - 4 Point Vehicles Raptor 2
+% SH.tau = transpose([0.20: 0.02: 0.38]);     % Trade Values - 4 Point Vehicles Raptor 2
+SH.tau = transpose([0.20: 0.005: 0.38]);     % Trade Values - 4 Point Vehicles Raptor 2
 % SH.tau = 0.28;                              % Best Value 
+% SH.tau = 0.27;                              % Actual Value
 
 % Inital Guessed Values or Target Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -79,7 +82,7 @@ SH_Splni = TV.SH.Spln;
 
 % Initial Conditions
 x0_SS = [SS_TOGWi; SS_Splni];
-x0_SH = [SH_TOGWi; SH_Splni];
+x0_SH = [SH_TOGWi; SH_Splni6];
 
 % Set Optimization Options
 tol   = 1e-10;                                      % Solver Tolerance  
@@ -264,7 +267,7 @@ for a = 1: 1: length(Wpay)
 end
 
 % Save To Data File
-clear a columnNames e ERROR_SH ERROR_SS f i I_Max options SH SH_Splni SH_TOGWi SHi SS SS_Splni SS_TOGWi SSi FS FSi tol x x0_SH x0_SS y
+clear a columnNames C e ERROR_SH ERROR_SS f i I_Max MTV options SH SH_Splni SH_TOGWi SHi SS SS_Splni SS_TOGWi SSi FS FSi tol x x0_SH x0_SS y
 clc
 
 % Create Data File

@@ -1,18 +1,17 @@
 %% 3D Solution Space Function
-function Plot_Solution_Space(Spln, TOGW, Wpay, tau, VehicleNo, P)
+function Plot_Solution_Space(Spln, TOGW, TW0, Wpay, VehicleNo, P)
 
     % Axis Parameters
     x  = Spln;       % [m^2]
     y  = TOGW;       % [Ton]
-    z  = Wpay;       % [Ton]
-    C2 = tau;
-    Data = [x, y, z, tau];
+    z  = TW0;        % [~]
+    Data = [x, y, z, Wpay];
+    
+    % Saved Converged C1
+    Saved_C1 = unique(Wpay);
 
     % Get distinct colors
-    Colors = lines(VehicleNo);
-
-    % Saved Converged C1
-    Saved_C1 = unique(z);
+    Colors = lines(length(Saved_C1));
 
     % Create Figure
     figure( ...
@@ -26,9 +25,7 @@ function Plot_Solution_Space(Spln, TOGW, Wpay, tau, VehicleNo, P)
     P.z_Domain = [floor(min(z) / P.z_Tick_I) * P.z_Tick_I, ceil(max(z) / P.z_Tick_I) * P.z_Tick_I];
 
     if P.z_Domain(1) == P.z_Domain(2)
-
         P.z_Domain = [floor(min(z - 10) / P.z_Tick_I) * P.z_Tick_I, ceil(max(z + 10) / P.z_Tick_I) * P.z_Tick_I];
-
     end
     
     % Iterate and Plot C1 Data with Lines
@@ -38,7 +35,7 @@ function Plot_Solution_Space(Spln, TOGW, Wpay, tau, VehicleNo, P)
         P.Color = Colors(i, :);
 
         % Current C1 Data
-        Tempdat = Data(Data(:, 3) == Saved_C1(i), :);
+        Tempdat = Data(Data(:, 4) == Saved_C1(i), :);
 
         % [kg, m^2] Plot Data
         Plot_3D_Function(Tempdat(:, 1), Tempdat(:, 2), Tempdat(:, 3), P);

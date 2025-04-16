@@ -1,5 +1,6 @@
 clear all, clc, close all, format compact, format longG, tic;
 %% Imports ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 % Constant Parameters
 [C, SS, SH] = Constant_Parameters();
 
@@ -27,44 +28,45 @@ P.LineStyle  = '-';
 P.Black_Lines = true;
 
 % Determine Constant Parameter if any
-if length(Wpay) ~= 1 && length(v_sep) == 1
-    C2 = VehicleData.Wpay;
-elseif length(v_sep) ~= 1 && length(Wpay) == 1
-    C2 = VehicleData.v_sep;
-else
+% if length(Wpay) ~= 1 && length(v_sep) == 1
+%     C2 = VehicleData.Wpay;
+% elseif length(v_sep) ~= 1 && length(Wpay) == 1
+%     C2 = VehicleData.v_sep;
+% else
     C2 = NaN([VehicleNo, 1]);
     P.Black_Lines = false;
     P.LineStyle   = 'none';
-end
+% end
 
 % Solution Space Generation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Plot 3D Solution Space
 if Plot_3D == true && Converge_SH == true
-
+                                            
     % Plot Starship OEW Target Value
     if P.Plot_TV == true;
 
         % Set Target Point
-        P.Target_z = [110];                                      % [Ton] Payload Weight       - Starship
-        P.Target_x = TV.FS.Spln * ones(length(P.Target_z), 1);   % [m^2] Planform Area        - Starship
-        P.Target_y = TV.FS.TOGW * ones(length(P.Target_z), 1);   % [Ton] Takeoff Gross Weight - Starship
+        P.Target_x = TV.FS.Spln;                                    % [m^2] Planform Area        - Full Stack
+        P.Target_y = TV.FS.TOGW;                                    % [Ton] Takeoff Gross Weight - Full Stack
+        P.Target_z = [(SH.N_eng * SH.ET0) / (TV.FS.TOGW * 1000)];   % [~]   Thrust to Weight     - Full Stack
 
     end
 
     % Axis Labels
     P.x_Label = 'Planform Area, Spln (m^2)';
     P.y_Label = 'Takeoff Gross Weight, TOGW (Tons)';
-    P.z_Label = 'Payload Weight, Wpay (Tons)';
+    P.z_Label = 'Thrust to Weight, T/W';
 
     % Plot Properties
     P.Title = 'Full Stack Solution Space';
     P.x_Tick_I = 50;                        % [m^2]
     P.y_Tick_I = 200;                       % [kg -> Ton]
-    P.z_Tick_I = 10;                        % [Ton]
+    P.z_Tick_I = 0.2;                       % [~]
 
-    % [m^2, kg -> Ton, kg -> Ton] Plot Solution Space
-    Plot_Solution_Space(VehicleData.FS_Spln, VehicleData.FS_TOGW/1000, VehicleData.Wpay/1000, VehicleData.FS_tau, VehicleNo, P);
+    % [m^2, kg -> Ton, ~] Plot Solution Space
+    Plot_Solution_Space(VehicleData.FS_Spln, VehicleData.FS_TOGW/1000, (SH.N_eng * SH.ET0) ./ VehicleData.FS_TOGW, ...
+                        VehicleData.Wpay, VehicleNo, P);
 
 end
 
