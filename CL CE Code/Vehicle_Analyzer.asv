@@ -237,11 +237,11 @@ for i = 1: 1: VehicleNo
         continue;
     end
 
-    % % [km/s] Delta-v Remaining After Launch
-    % fprintf('[km/s] dv Remaming After Launch\n\t%f \n', Launch.S.dv_remaining);
-    % 
-    % % [kg -> MT] Weight of Propellant After Launch
-    % fprintf('[MT] Propellant Remaming After Launch\n\t%f \n', Launch.S.Mppl_remaining/1000);
+    % [km/s] Delta-v Remaining After Launch
+    fprintf('[km/s] dv Remaming After Launch\n\t%f \n', Launch.S.dv_remaining);
+
+    % [kg -> MT] Weight of Propellant After Launch
+    fprintf('[MT] Propellant Remaming After Launch\n\t%f \n', Launch.S.Mppl_remaining/1000);
     
     % Starship Descent ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -255,29 +255,23 @@ for i = 1: 1: VehicleNo
     Geometry.SS.AftArea  = SS.Spln.AF;      % [m^2] Planform Area - AF
     
     % Starship Descent Inputs
-    h = 100000;         % [m]           Inital Altitude of Starship Above Mars
-    V = 2.2 * 10^3;     % [(km -> m)/s] Inital Velocity of Starship
+    h = 100000;         % [m]           Inital Altitude of Starship Above Mars=
+    V = 4 * 10^3;       % [(km -> m)/s] Inital Velocity of Starship
 
-    % Starship Mars Descent Analysis
+    % Starship Descent Analysis
     [DescentC] = DescentConstants(SS.Spln_tot, (SS.OEW + Wpay)*1.1);
     [~, SSDescent.dv, SSDescent.DP, SSDescent.gs] = Descent_Landing_Function_Segment(h, V, ...
                                                                                 DescentC, Geometry);
     
     % Mars Descent G loading Check
-    Max_MarsDescentG = max(SSDescent.gs);
-    if Max_MarsDescentG > 10
-        fprintf('Mars Dsecent G Loading too High %0.3fgs \n%s\n', Max_MarsDescentG, Tilda);
-        continue;
-    end
+    
 
-    % [km/s] Delta-v Needed for Mars Landing
-    fprintf('[km/s] dv Needed for Mars Landing \n\t%f \n', SSDescent.dv);
 
     % [kg, m] CG Location of Propellant Tanks from Base - SS
     [SS.Wppl, SS.Lppl] = TankSizesPropWeightLocations(Vehicle.SS_Vppl(i), ...
                                                       Vehicle.SS_Vppl(i)*0.1, FS.D);
     
-    % Starship CG Location Inputs - Mars Descent
+    % Starship CG Location Inputs
     LVeh    = SS.H_Cone + SS.H_Fuse;    % [m] Vehicle Length - SS
     DVeh    = FS.D;                     % [m] Starship Diameter
     mVehDry = SS.OEW;                   % [kg] D
@@ -294,11 +288,11 @@ for i = 1: 1: VehicleNo
     Lpay    = LVeh - Nose_Lpay;         % [m]   CG Location of Payload WRT Rocket Base
     mPay = Wpay;                        % [kg] Payload Weight
     
-    % [m] Starship CG Location from Base of Rocket - Mars Descent
+    % [m] Starship CG Location from Base of Rocket
     [Bottom_SS_Lcg] = StarshipCGLocation(LVeh, DVeh, mVehDry, LloxSS_rest, mLoxSS, LmetSS_rest, ...
                                          mMetSS, Lfore, Sfore, Laft, Saft, Lpay, mPay);
     
-    % Stability Inputs 
+    % Stability Inputs
     Nose_SS_Lcg = LVeh - Bottom_SS_Lcg;     % [m] SS CG Location from Rocket Nose
     Lcp   = LVeh/2;                         % [m] CP Location from Rocket Nose
     Laft  = SS.x.AF;                        % [m] AF Root Chord Location WRT Rocket Nose

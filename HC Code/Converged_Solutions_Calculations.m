@@ -1,19 +1,23 @@
 clear all, clc, close all, format compact, format longG, tic;
-%% Imports ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%% Imports ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Constant Parameters
 [C, SS, SH] = Constant_Parameters();
 
 % Imported Data File
+%{
 load('Reduced Vehicle Data.mat');
-
 % VehicleData = CombTable.Wpay;
 % DATA_Error  = CombTable.WpayE;
 VehicleData = CombTable.v_sep;
 DATA_Error  = CombTable.v_sepE;
-VehicleNo   = length(VehicleData.Wpay);
+%}
+load('Data.mat');
 
-%% Vehicle Calculations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% [int#] Vehicle Count
+VehicleNo = length(VehicleData.Wpay);
+
+%% Vehicle Calculations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Loop and Calculate
 for i = 1: 1: VehicleNo
@@ -129,10 +133,32 @@ for i = 1: 1: VehicleNo
 end
 clear i
 
-%% Calculated Data Table ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%% Calculated Data Table ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+% Calculated Data Matrix ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Save Calculated Data
-CalcData = [VehicleData.Wpay/1000, VehicleData.v_sep, VehicleData.SS_tau, VehicleData.SH_tau, VehicleData.FS_tau, ...
+CalcData = [VehicleData.Wpay, VehicleData.v_sep, VehicleData.SS_tau, VehicleData.SH_tau, VehicleData.FS_tau, ...
+            SS.TW0, SS.Wstr, SS.Weng, SS.Wsys, SS.Vtot, SS.Vfix, SS.Vppl, SS.Vsys, SS.Veng, SS.Vvv, SS.Vpay, ...
+            SH.TW0, SH.Wstr, SH.Weng, SH.Wsys, SH.Vtot, SH.Vfix, SH.Vppl, SH.Vsys, SH.Veng, SH.Vvv, ...
+            FS.TW0, FS.Wstr, FS.Weng, FS.Wsys, FS.Vtot, FS.Vfix, FS.Vppl, FS.Vsys, FS.Veng, FS.Vvv];
+
+% Define the table column names
+columnNames = {'Wpay',   'v_sep' ,  'SS_tau',  'SH_tau',  'FS_tau',  ...
+		       'SS_TW0', 'SS_Wstr', 'SS_Weng', 'SS_Wsys', 'SS_Vtot', 'SS_Vfix', 'SS_Vppl', 'SS_Vsys', 'SS_Veng', 'SS_Vvv', 'SS_Vpay', ...
+               'SH_TW0', 'SH_Wstr', 'SH_Weng', 'SH_Wsys', 'SH_Vtot', 'SH_Vfix', 'SH_Vppl', 'SH_Vsys', 'SH_Veng', 'SH_Vvv', ...
+               'FS_TW0', 'FS_Wstr', 'FS_Weng', 'FS_Wsys', 'FS_Vtot', 'FS_Vfix', 'FS_Vppl', 'FS_Vsys', 'FS_Veng', 'FS_Vvv'};
+
+% Convert the numeric array to a table
+CalculatedData = array2table(CalcData, 'VariableNames', columnNames);
+
+% Save Calculated Data 
+save('Calculated Data', 'CalculatedData');
+
+% Calculated Data Table ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+% Calculated Data Matrix
+CalcDataTable = [VehicleData.Wpay/1000, VehicleData.v_sep, VehicleData.SS_tau, VehicleData.SH_tau, VehicleData.FS_tau, ...
             SS.TW0, SS.Wstr/1000, SS.Weng/1000, SS.Wsys/1000, SS.Vtot, SS.Vfix, SS.Vppl, SS.Vsys, SS.Veng, SS.Vvv, SS.Vpay, ...
             SH.TW0, SH.Wstr/1000, SH.Weng/1000, SH.Wsys/1000, SH.Vtot, SH.Vfix, SH.Vppl, SH.Vsys, SH.Veng, SH.Vvv, ...
             FS.TW0, FS.Wstr/1000, FS.Weng/1000, FS.Wsys/1000, FS.Vtot, FS.Vfix, FS.Vppl, FS.Vsys, FS.Veng, FS.Vvv];
@@ -143,14 +169,11 @@ columnNames = {'Wpay (Ton)', 'v_sep (km/s)' , 'SS_tau',        'SH_tau',        
                'SH_TW0',     'SH_Wstr (Ton)', 'SH_Weng (Ton)', 'SH_Wsys (Ton)', 'SH_Vtot (m^3)', 'SH_Vfix (m^3)', 'SH_Vppl (m^3)', 'SH_Vsys (m^3)', 'SH_Veng (m^3)', 'SH_Vvv (m^3)', ...
                'FS_TW0',     'FS_Wstr (Ton)', 'FS_Weng (Ton)', 'FS_Wsys (Ton)', 'FS_Vtot (m^3)', 'FS_Vfix (m^3)', 'FS_Vppl (m^3)', 'FS_Vsys (m^3)', 'FS_Veng (m^3)', 'FS_Vvv (m^3)'};
 
-% Create   Data_Error Table with Units
-% Recreate VehicleData Table with Units
-
 % Convert the numeric array to a table
-CalculatedData = array2table(CalcData, 'VariableNames', columnNames);
+CalculatedDataTable = array2table(CalcDataTable, 'VariableNames', columnNames);
 
 % Output txt File of Tables
-writetable(CalculatedData, 'CalculatedData.txt', ...
+writetable(CalculatedDataTable, 'CalculatedDataTable.txt', ...
            'Delimiter', '\t', ...
            'WriteRowNames', true);
 writetable(DATA_Error, 'DATA_Error.txt', ...

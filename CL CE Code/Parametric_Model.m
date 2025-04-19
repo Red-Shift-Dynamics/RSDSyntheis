@@ -247,6 +247,7 @@ function [ERROR_SS] = Solve_SS(SS_Var, TV, SS, FS)
         ERROR_SS = TV.SS.tau - (SS.V.tot/SS.Spln.tot^1.5);
     elseif TV.Converge == 'V'
         ERROR_SS = TV.SS.V - SS.V.tot;
+    elseif TV.Converge == 'Spln.Flaps'
     else
         error('Converge SS what?')
     end

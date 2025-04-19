@@ -1,9 +1,11 @@
 clear all, clc, close all, format compact, format longG, tic;
-%% Imports ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%% Imports ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 % Constant Parameters
 [C, SS, SH] = Constant_Parameters();
 
-%% Input Paramters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%% Input Paramters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 % Create New Incriment Structure for Starship and Superheavy
 SSi = SS;   SHi = SH;   VehicleNo = 0;
 
@@ -16,7 +18,7 @@ Plot_3D = true;         % Only Works When Converge_SH == true
 % Save Data Statement
 Save_Data = true;
 
-% Plot Target Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% Plot Target Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Target Values
 P.Plot_TV = true;
@@ -52,15 +54,15 @@ v_sep = [1300: 50: 2200];                  % Trade Values
 % Iterated Geometric Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Slenderness Parameter - Starship
-% SS.tau = transpose([0.15: 0.02: 0.32]);     % Trade Values
-SS.tau = transpose([0.15: 0.005: 0.32]);     % Trade Values
+SS.tau = transpose([0.15: 0.02: 0.32]);     % Trade Values
+% SS.tau = transpose([0.15: 0.005: 0.32]);     % Trade Values
 % SS.tau = 0.16;                              % Best Value    
 % SS.tau = 0.22;                              % Actual Value
 % SS.tau = transpose([0.15: 0.01: 0.18]);     % 4 Point Vehicles Raptor 2
 
 % Slenderness Parameter - Superheavy
-% SH.tau = transpose([0.20: 0.02: 0.38]);     % Trade Values - 4 Point Vehicles Raptor 2
-SH.tau = transpose([0.20: 0.005: 0.38]);     % Trade Values - 4 Point Vehicles Raptor 2
+SH.tau = transpose([0.20: 0.02: 0.38]);     % Trade Values - 4 Point Vehicles Raptor 2
+% SH.tau = transpose([0.20: 0.005: 0.38]);     % Trade Values - 4 Point Vehicles Raptor 2
 % SH.tau = 0.28;                              % Best Value 
 % SH.tau = 0.27;                              % Actual Value
 
@@ -78,11 +80,11 @@ SH_TOGWi = TV.SH.TOGW * 1000;
 % [m^2] Planform Area - Superheavy
 SH_Splni = TV.SH.Spln;
 
-%% The Meat and the Bones ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%% The Meat and the Bones ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Initial Conditions
 x0_SS = [SS_TOGWi; SS_Splni];
-x0_SH = [SH_TOGWi; SH_Splni6];
+x0_SH = [SH_TOGWi; SH_Splni];
 
 % Set Optimization Options
 tol   = 1e-10;                                      % Solver Tolerance  
@@ -275,7 +277,7 @@ if Save_Data == true
     save('Data.mat');
 end
 
-%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Checks for Converged Vehicle
 if VehicleNo == 0;
@@ -288,7 +290,7 @@ end
 % Create Plots
 Plot_Generation();
 
-%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %}
 % Prints the simulation time on the command window.
 fprintf('Program Complete! (%0.3f seconds)\n', toc);
