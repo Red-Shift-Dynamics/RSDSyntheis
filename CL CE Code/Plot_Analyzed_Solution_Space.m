@@ -1,17 +1,20 @@
-%% 3D Solution Space Function
-function Plot_Solution_Space(Spln, TOGW, TW0, Wpay, VehicleNo, P)
+%% 3D Analyzed Solution Space Function
+function Plot_Analyzed_Solution_Space(Spln, TOGW, TW0, VehicleResults, VehicleNo, P)
 
     % Axis Parameters
     x  = Spln;       % [m^2]
     y  = TOGW;       % [Ton]
     z  = TW0;        % [~]
-    Data = [x, y, z, Wpay];
+    Data = [x, y, z];
     
-    % Saved Converged C1
-    Saved_C1 = unique(Wpay);
+    % Convert Table to Array
+    VehicleResults = table2array(VehicleResults);
 
-    % Get distinct colors
-    Colors = lines(length(Saved_C1));
+    % Number of Conditions
+    NumConditions = width(VehicleResults);
+    
+    % Generate Graph Colors
+    Colors = lines(NumConditions);
 
     % Create Figure
     figure( ...
@@ -28,13 +31,24 @@ function Plot_Solution_Space(Spln, TOGW, TW0, Wpay, VehicleNo, P)
     end
     
     % Iterate and Plot C1 Data with Lines
-    for i = 1: 1: length(Saved_C1)
+    TempMarker = P.MarkerSize;
+    for i = 1: 1: NumConditions
 
         % Plot Color
-        P.Color = Colors(i, :);
+        if i == 1
+            P.Color = 'Black';
+        elseif i == 2
+            P.MarkerSize = 5;
+        else
+            P.MarkerSize = TempMarker;
+            P.Color = Colors(i - 1, :);
+        end
+    
+        % Group Vehicle Conditions
+        Condition = VehicleResults(isnan(VehicleResults(:, i)) == 0, i);
 
         % Current C1 Data
-        Tempdat = Data(Data(:, 4) == Saved_C1(i), :);
+        Tempdat = Data(Condition, :);
 
         % [kg, m^2] Plot Data
         Plot_3D_Function(Tempdat(:, 1), Tempdat(:, 2), Tempdat(:, 3), P);

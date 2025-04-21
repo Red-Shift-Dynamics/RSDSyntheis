@@ -19,7 +19,7 @@ function [C, SS, SH] = Constant_Parameters()
     SS.Istr = 41;                       % ~ Sokol ~
 
     % [Ton -> kg] Constant Unmammed Systems Weight - Starship 
-    SS.Cun = (0.928 + 5) * 1000;        % Updated 3/22 - 5t extra for thermal systems
+    SS.Cun = (0.928 + 12.1) * 1000;        % Updated 4/19 - 12.1t extra for thermal systems
 
     % Systems Volume Coeff - Starship 
     SS.kvs = 0.018;
@@ -69,7 +69,7 @@ function [C, SS, SH] = Constant_Parameters()
     SH.rho_ppl = SS.rho_ppl;
     
     % [int#] # Engines - Superheavy
-    SH.N_eng = 30;
+    SH.N_eng = 33;
 
     % Raptor 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %{

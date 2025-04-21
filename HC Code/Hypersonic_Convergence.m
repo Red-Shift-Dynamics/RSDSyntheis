@@ -269,7 +269,7 @@ for a = 1: 1: length(Wpay)
 end
 
 % Save To Data File
-clear a columnNames C e ERROR_SH ERROR_SS f i I_Max MTV options SH SH_Splni SH_TOGWi SHi SS SS_Splni SS_TOGWi SSi FS FSi tol x x0_SH x0_SS y
+clear a columnNames e ERROR_SH ERROR_SS f i I_Max MTV options SH_Splni SH_TOGWi SHi SS_Splni SS_TOGWi SSi FS FSi tol x x0_SH x0_SS y
 clc
 
 % Create Data File
@@ -286,6 +286,9 @@ if VehicleNo == 0;
     error('No Converged Vehicles')
 
 end
+
+% Vehicle Calculations
+Converged_Solutions_Calculations();
 
 % Create Plots
 Plot_Generation();
