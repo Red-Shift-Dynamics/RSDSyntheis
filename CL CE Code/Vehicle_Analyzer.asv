@@ -126,7 +126,43 @@ SS.Spln.Cone = Str.Spln_Cone(FS.D == Str.d_Cone);       % [m^2] Planform Area - 
 SS.Swet.Cone = Str.Swet_Cone(FS.D == Str.d_Cone);       % [m^2] Wetted Area   - Cone
 SS.V.Cone    = Str.V_Cone   (FS.D == Str.d_Cone);       % [m^3] Volume        - Cone
 
-for i = 1: 1: VehicleNo
+
+NumVehiclePass = [81;
+90;
+91;
+158;
+167;
+175;
+176;
+227;
+236;
+237;
+245;
+246;
+247;
+311;
+312;
+320;
+321;
+322;
+385;
+386;
+395;
+396;
+445;
+454;
+463;
+464;
+517;
+518;
+526;
+527;
+528];
+
+% for i = 1: 1: VehicleNo
+for aa = 1: 1: length(NumVehiclePass)
+
+    i = NumVehiclePass(aa);
 
     % Parametric Model ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    
@@ -157,13 +193,13 @@ for i = 1: 1: VehicleNo
     % Checks for Geometry Error
     if max(abs(Error)) < tol
         % fprintf('--- STARSHIP OVERALL TOTALS ---\n');
-        fprintf('  SS CylL = %.3f m\n',   SS.H_Fuse);
+        % fprintf('  SS CylL = %.3f m\n',   SS.H_Fuse);
         % fprintf('  SS V    = %.3f%%\n',   Error(1,1));
         % fprintf('  SS Spln = %.3f%%\n',   Error(2,1));
         % fprintf('  SS Swet = %.3f%%\n',   Error(3,1));
         % fprintf('  SS Tau  = %.3f%%\n\n', Error(4,1));
         % fprintf('--- SUPER HEAVY (BOOSTER) ---\n');
-        fprintf('  SH FusL = %.3f m\n',   SH.H_Fuse);
+        % fprintf('  SH FusL = %.3f m\n',   SH.H_Fuse);
         % fprintf('  SH V    = %.3f%%\n',   Error(5,1));
         % fprintf('  SH Spln = %.3f%%\n',   Error(6,1));
         % fprintf('  SH Swet = %.3f%%\n',   Error(7,1));
@@ -237,7 +273,7 @@ for i = 1: 1: VehicleNo
     end
 
     % [m/s] Delta-v Needed for Mars Landing
-    fprintf('[m/s] dv Needed for Mars Landing \n\t%f \n', SSDescent.dv);
+    % fprintf('[m/s] dv Needed for Mars Landing \n\t%f \n', SSDescent.dv);
 
     % [kg, m] CG Location of Propellant Tanks from Base - SS
     [SS.Wppl, SS.Lppl] = TankSizesPropWeightLocations(Vehicle.SS_Vppl(i), ...
@@ -397,12 +433,6 @@ for i = 1: 1: VehicleNo
         continue;
     end
 
-    % [km/s] Delta-v Remaining After Launch
-    fprintf('[km/s] dv Remaming After Launch\n\t%f \n', Launch.S.dv_remaining);
-
-    % % [kg -> MT] Weight of Propellant After Launch
-    % fprintf('[MT] Propellant Remaming After Launch\n\t%f \n', Launch.S.Mppl_remaining/1000);
-
     % Earth-Mars Transfer ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     % Trajectory Analysis
@@ -475,12 +505,6 @@ for i = 1: 1: VehicleNo
         continue;
     end
 
-    % [km/s] Delta-v Remaining After Mars Launch
-    fprintf('[km/s] dv Remaming After Mars Launch\n\t%f\n', MarsLaunch.S.dv_remaining);
-
-    % % [kg -> MT] Weight of Propellant After Mars Launch
-    % fprintf('[MT] Propellant Remaming After Mars Launch\n\t%f\n', MarsLaunch.S.Mppl_remaining/1000);
-    
     % Mars-Earth Transfer ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     % Trajectory Analysis
@@ -510,19 +534,36 @@ for i = 1: 1: VehicleNo
     % % Format Data Error Table
     % columnNames = {'Pass', 'Geo_Fail', 'Struc_Fail', 'Struc_Mars_Fail', 'Mars_G_Fail', 'Pitch_Fail', ...
     %                'Yaw_Fail', 'Earth_Capture_Fail'};
-    % VehiclePerformance = ;
+    
+    % 
+    VehiclePerformance(i, 1) = Max_MarsDescentG;
+    fprintf('%f Gs\n', Max_MarsDescentG);
+
+    % [km/s] Delta-v Remaining After Launch
+    VehiclePerformance(i, 2) = Launch.S.dv_remaining;
+    fprintf('[km/s] dv Remaming After Launch\n\t%f \n', Launch.S.dv_remaining);
+
+    % [km/s] Delta-v Remaining After Mars Launch
+    VehiclePerformance(i, 3) = MarsLaunch.S.dv_remaining;
+    fprintf('[km/s] dv Remaming After Mars Launch\n\t%f\n', MarsLaunch.S.dv_remaining);
+
+    % [km/s] Delta-v Remaining At LEO
+    VehiclePerformance(i, 4) = dvRemain;
+    fprintf('[km/s] dv Remaning At LEO\n\t%f \n', dvRemain);
 
     % Print Tilda
     fprintf('%s\n', Tilda);
     
 end
 
+columnNames = {'MaxGLoading', 'ELaunchdvLeft', 'ELaunchdvLeft'}
+
 % Print Number of Passed Vehicles
 IntPass = length(VehicleResults.Pass(isnan(VehicleResults.Pass) == 0));
 fprintf('%d Feasible Vehicles\n%s\n', IntPass, Equal);
 
 % Save Positions of Vehicles That Pass and Fail
-save('Vehicle Results', 'VehicleResults', 'IntPass');
+save('Vehicle Results', 'VehicleResults', 'IntPass', 'VehiclePerformance');
 
 %% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %}

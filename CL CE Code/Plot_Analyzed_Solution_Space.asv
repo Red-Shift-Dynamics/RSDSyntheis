@@ -30,10 +30,6 @@ function Plot_Analyzed_Solution_Space(Spln, TOGW, TW0, VehicleResults, VehicleNo
         P.z_Domain = [floor(min(z - 10) / P.z_Tick_I) * P.z_Tick_I, ceil(max(z + 10) / P.z_Tick_I) * P.z_Tick_I];
     end
     
-    % Table Column Names
-    columnNames = {'Pass', 'Geo_Fail', 'Struc_Fail', 'Struc_Mars_Fail', 'Mars_G_Fail', 'Pitch_Fail', ...
-                   'Yaw_Fail', 'Earth_Capture_Fail'};
-    
     % Iterate and Plot C1 Data with Lines
     TempMarker = P.MarkerSize;
     for i = 1: 1: NumConditions
@@ -43,16 +39,9 @@ function Plot_Analyzed_Solution_Space(Spln, TOGW, TW0, VehicleResults, VehicleNo
             P.Color = 'Black';
         elseif i == 2
             P.MarkerSize = 5;
-        elseif strcmp(columnNames(i), 'Struc_Fail');
+        else
             P.MarkerSize = TempMarker;
-            P.Color = [255,165,0] / 255;
-            'Struc_Fail - Orange';
-        elseif strcmp(columnNames(i), 'Mars_G_Fail');
-            P.Color = [255,69,0] / 255;
-            'Mars_G_Fail - Red';
-        elseif strcmp(columnNames(i), 'Earth_Capture_Fail');
-            P.Color = [50,205,50] / 255;
-            'Earth_Capture_Fail - Orange';
+            P.Color = Colors(i - 1, :);
         end
     
         % Group Vehicle Conditions

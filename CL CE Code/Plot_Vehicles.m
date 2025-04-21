@@ -6,12 +6,12 @@ addpath('C:\Users\Taquito-Mini\Documents\GitHub\Synthesis\HC Code');
 
 % Import Data Files
 % addpath('C:\Users\Taquito-Mini\Documents\GitHub\Synthesis\CL CE Code\703 Vehicles 28 Raptor 3\8.5 m 12.5 Area 3.3 V Mars in');
-addpath('C:\Users\Taquito-Mini\Documents\GitHub\Synthesis\CL CE Code\703 Vehicles 28 Raptor 3\8.5 m. 9 Area, 3.3 V Mars in');
+% addpath('C:\Users\Taquito-Mini\Documents\GitHub\Synthesis\CL CE Code\703 Vehicles 28 Raptor 3\8.5 m. 9 Area, 3.3 V Mars in');
 load('Data VA', 'VehicleData', 'SS', 'SH', 'TV', 'VehicleNo');
 load('Calculated Data VA', 'CalculatedData');
-load('Vehicle Results', 'VehicleResults');
-rmpath('C:\Users\Taquito-Mini\Documents\GitHub\Synthesis\CL CE Code\703 Vehicles 28 Raptor 3\8.5 m 12.5 Area 3.3 V Mars in');
-rmpath('C:\Users\Taquito-Mini\Documents\GitHub\Synthesis\CL CE Code\703 Vehicles 28 Raptor 3\8.5 m. 9 Area, 3.3 V Mars in');
+load('Vehicle Results', 'VehicleResults', 'VehiclePerformance');
+% rmpath('C:\Users\Taquito-Mini\Documents\GitHub\Synthesis\CL CE Code\703 Vehicles 28 Raptor 3\8.5 m 12.5 Area 3.3 V Mars in');
+% rmpath('C:\Users\Taquito-Mini\Documents\GitHub\Synthesis\CL CE Code\703 Vehicles 28 Raptor 3\8.5 m. 9 Area, 3.3 V Mars in');
 
 %% Plots ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -29,8 +29,9 @@ if P.Plot_TV == true;
     % Set Target Point
     P.Target_x = TV.FS.Spln;                                    % [m^2] Planform Area        - Full Stack
     P.Target_y = TV.FS.TOGW;                                    % [Ton] Takeoff Gross Weight - Full Stack
-    P.Target_z = [(SH.N_eng * SH.ET0) / (TV.FS.TOGW * 1000)];   % [~]   Thrust to Weight     - Full Stack
-
+    % P.Target_z = [(SH.N_eng * SH.ET0) / (TV.FS.TOGW * 1000)];   % [~]   Thrust to Weight     - Full Stack
+    P.Target_z = 0.22;
+    % P.Target_z = 1400;
 end
 
 % Axis Labels
@@ -42,7 +43,8 @@ P.z_Label = 'Thrust to Weight, T/W';
 P.Title = 'Full Stack Solution Space';
 P.x_Tick_I = 50;                        % [m^2]
 P.y_Tick_I = 200;                       % [kg -> Ton]
-P.z_Tick_I = 0.2;                       % [~]
+% P.z_Tick_I = 0.2;                       % [~]
+P.z_Tick_I = 100;
 
 % Passed Vehicle Numbers
 NumVehiclePass = VehicleResults.Pass(isnan(VehicleResults.Pass) == 0);
@@ -63,6 +65,8 @@ end
 % [m^2, kg -> Ton, ~] Plot Analyzed Solution Space
 Plot_Analyzed_Solution_Space(VehicleData.FS_Spln, VehicleData.FS_TOGW/1000, ...
                           (SH.N_eng * SH.ET0) ./ VehicleData.FS_TOGW, VehicleResults, VehicleNo, P);
+% Plot_Analyzed_Solution_Space(VehicleData.FS_Spln, VehicleData.FS_TOGW/1000, ...
+%                           VehicleData.v_sep, VehicleResults, VehicleNo, P);
 
 %% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %}
