@@ -1,5 +1,5 @@
 %% 3D Analyzed Solution Space Function
-function Plot_Analyzed_Solution_Space(Spln, TOGW, TW0, VehicleResults, VehicleNo, P)
+function Plot_Analyzed_Solution_Space(Spln, TOGW, TW0, VehicleResults, ChosenVehicle, GLoadingExceedVehicle, P)
 
     % Axis Parameters
     x  = Spln;       % [m^2]
@@ -34,8 +34,39 @@ function Plot_Analyzed_Solution_Space(Spln, TOGW, TW0, VehicleResults, VehicleNo
     columnNames = {'Pass', 'Geo_Fail', 'Struc_Fail', 'Struc_Mars_Fail', 'Mars_G_Fail', 'Pitch_Fail', ...
                    'Yaw_Fail', 'Earth_Capture_Fail'};
     
+    % ~~~
+
+    % Temperary Plot
+    TempMarkerSize = P.MarkerSize;
+    TempMarker     = P.Marker;
+
+    % % Set Different Marker
+    % P.Marker = 'o';
+    % P.Color = 'Black';
+    % 
+    % % Current C1 Data
+    % Tempdat = Data(ChosenVehicle, :);
+    % 
+    % % [kg, m^2] Plot Data
+    % Plot_3D_Function(Tempdat(:, 1), Tempdat(:, 2), Tempdat(:, 3), P);
+    % hold on;
+    
+    % ~~~
+
+    % Set Different Marker
+    P.Marker = '.';
+    P.Color = [255,69,0] / 255;
+
+    % Current C1 Data
+    Tempdat = Data(GLoadingExceedVehicle, :);
+
+    % [kg, m^2] Plot Data
+    Plot_3D_Function(Tempdat(:, 1), Tempdat(:, 2), Tempdat(:, 3), P);
+    hold on;
+
+    % ~~~
+
     % Iterate and Plot C1 Data with Lines
-    TempMarker = P.MarkerSize;
     for i = 1: 1: NumConditions
 
         % Plot Color
@@ -44,7 +75,7 @@ function Plot_Analyzed_Solution_Space(Spln, TOGW, TW0, VehicleResults, VehicleNo
         elseif i == 2
             P.MarkerSize = 5;
         elseif strcmp(columnNames(i), 'Struc_Fail');
-            P.MarkerSize = TempMarker;
+            P.MarkerSize = TempMarkerSize;
             P.Color = [255,165,0] / 255;
             'Struc_Fail - Orange';
         elseif strcmp(columnNames(i), 'Mars_G_Fail');
@@ -54,15 +85,18 @@ function Plot_Analyzed_Solution_Space(Spln, TOGW, TW0, VehicleResults, VehicleNo
             P.Color = [50,205,50] / 255;
             'Earth_Capture_Fail - Orange';
         end
-    
+
         % Group Vehicle Conditions
         Condition = VehicleResults(isnan(VehicleResults(:, i)) == 0, i);
-        
+
         if isempty(Condition) ~= 1
+
+            % Rest to Default Marker
+            P.Marker = TempMarker;
 
             % Current C1 Data
             Tempdat = Data(Condition, :);
-    
+
             % [kg, m^2] Plot Data
             Plot_3D_Function(Tempdat(:, 1), Tempdat(:, 2), Tempdat(:, 3), P);
             hold on;

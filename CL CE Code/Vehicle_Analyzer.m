@@ -49,6 +49,9 @@ Vehicle = CalculatedData;
 % [int#] Vehicle Counter
 VehCount = 1;
 
+% [int#] Saved Vehicle Counter
+SaveVehCount = 1;
+
 % Format Data Error Table
 columnNames = {'Pass', 'Geo_Fail', 'Struc_Fail', 'Struc_Mars_Fail', 'Mars_G_Fail', 'Pitch_Fail', ...
                'Yaw_Fail', 'Earth_Capture_Fail'};
@@ -114,6 +117,16 @@ SH.Spln.GF = 11.9072;
 % [m] Grid Fin Span
 SH.b.GF = 9;
 
+% Specific Vehicle in Solution Space ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+% NumVehiclePass = [81;90;91;158;167;175;176;227;236;237;245;246;247;311;312;320;321;322;385; ...
+%                   386;395;396;445;454;463;464;517;518;526;527;528];
+
+% CHOSEN VEHICLE
+% NumVehiclePass = 158;
+NumVehiclePass = 167;       % Actual Vehicle
+
+
 %% Computation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Starship Engine Check
@@ -125,39 +138,6 @@ end
 SS.Spln.Cone = Str.Spln_Cone(FS.D == Str.d_Cone);       % [m^2] Planform Area - Cone
 SS.Swet.Cone = Str.Swet_Cone(FS.D == Str.d_Cone);       % [m^2] Wetted Area   - Cone
 SS.V.Cone    = Str.V_Cone   (FS.D == Str.d_Cone);       % [m^3] Volume        - Cone
-
-
-NumVehiclePass = [81;
-90;
-91;
-158;
-167;
-175;
-176;
-227;
-236;
-237;
-245;
-246;
-247;
-311;
-312;
-320;
-321;
-322;
-385;
-386;
-395;
-396;
-445;
-454;
-463;
-464;
-517;
-518;
-526;
-527;
-528];
 
 % for i = 1: 1: VehicleNo
 for aa = 1: 1: length(NumVehiclePass)
@@ -179,6 +159,8 @@ for aa = 1: 1: length(NumVehiclePass)
     % Generate Parametric Model
     [SS, SH, FS] = ParametricModelCode(SS, SH, FS, VecIn);
     
+    save('GeoOutputs', 'SS', 'SH', 'FS');
+
     % Calculate Geometry Vehicle Error
     Error      = zeros(8, 1);
     Error(1,1) = (SS.V_tot    - VecIn.SS_Vtot)/VecIn.SS_Vtot * 100;
@@ -191,28 +173,28 @@ for aa = 1: 1: length(NumVehiclePass)
     Error(8,1) = (SH.tau      - VecIn.SH_tau )/VecIn.SH_tau  * 100;
     
     % Checks for Geometry Error
-    if max(abs(Error)) < tol
-        % fprintf('--- STARSHIP OVERALL TOTALS ---\n');
-        % fprintf('  SS CylL = %.3f m\n',   SS.H_Fuse);
-        % fprintf('  SS V    = %.3f%%\n',   Error(1,1));
-        % fprintf('  SS Spln = %.3f%%\n',   Error(2,1));
-        % fprintf('  SS Swet = %.3f%%\n',   Error(3,1));
-        % fprintf('  SS Tau  = %.3f%%\n\n', Error(4,1));
-        % fprintf('--- SUPER HEAVY (BOOSTER) ---\n');
-        % fprintf('  SH FusL = %.3f m\n',   SH.H_Fuse);
-        % fprintf('  SH V    = %.3f%%\n',   Error(5,1));
-        % fprintf('  SH Spln = %.3f%%\n',   Error(6,1));
-        % fprintf('  SH Swet = %.3f%%\n',   Error(7,1));
-        % fprintf('  SH Tau  = %.3f%%\n\n', Error(8,1));
-    else
+    if max(abs(Error)) > tol
         % fprintf('Geo Error Too High %0.3f%%\n%s\n', max(abs(Error)), Tilda);
-        VehicleResults.Geo_Fail(VehCount) = i;
-        VehCount = VehCount + 1;
+        VehicleResults.Geo_Fail(i) = i;
         continue;
     end
 
     % Print Current Vehicle Number
     fprintf('Vehicle %d \n', i);
+
+    % % Print Geometry Error
+    % fprintf('--- STARSHIP OVERALL TOTALS ---\n');
+    % fprintf('  SS CylL = %.3f m\n',   SS.H_Fuse);
+    % fprintf('  SS V    = %.3f%%\n',   Error(1,1));
+    % fprintf('  SS Spln = %.3f%%\n',   Error(2,1));
+    % fprintf('  SS Swet = %.3f%%\n',   Error(3,1));
+    % fprintf('  SS Tau  = %.3f%%\n\n', Error(4,1));
+    % fprintf('--- SUPER HEAVY (BOOSTER) ---\n');
+    % fprintf('  SH FusL = %.3f m\n',   SH.H_Fuse);
+    % fprintf('  SH V    = %.3f%%\n',   Error(5,1));
+    % fprintf('  SH Spln = %.3f%%\n',   Error(6,1));
+    % fprintf('  SH Swet = %.3f%%\n',   Error(7,1));
+    % fprintf('  SH Tau  = %.3f%%\n\n', Error(8,1));
 
     % Geometry Inputs
     Geometry.SS.D        = FS.D;            % [m]   Starship Fuselage diameter
@@ -267,8 +249,7 @@ for aa = 1: 1: length(NumVehiclePass)
     Max_MarsDescentG = max(SSDescent.gs);
     if Max_MarsDescentG > Max_Gs;
         fprintf('Mars Descent G Loading too High %0.3f G''s \n%s\n', Max_MarsDescentG, Tilda);
-        VehicleResults.Mars_G_Fail(VehCount) = i;
-        VehCount = VehCount + 1;
+        VehicleResults.Mars_G_Fail(i) = i;
         continue;
     end
 
@@ -320,8 +301,7 @@ for aa = 1: 1: length(NumVehiclePass)
     % Structural Check
     if strcmp(Out, 'fails') == 1
         fprintf('Mars Descent Structural Failure!\n%s\n', Tilda);
-        VehicleResults.Struc_Mars_Fail(VehCount) = i;
-        VehCount = VehCount + 1;
+        VehicleResults.Struc_Mars_Fail(i) = i;
         continue;
     end
     
@@ -340,8 +320,7 @@ for aa = 1: 1: length(NumVehiclePass)
     % Pitch Stability Check
     if strcmp(CR, 'fail') == 1
         fprintf('Pitch Stability Failure!\n%s\n', Tilda);
-        VehicleResults.Pitch_Fail(VehCount) = i;
-        VehCount = VehCount + 1;
+        VehicleResults.Pitch_Fail(i) = i;
         continue;
     end
 
@@ -351,8 +330,7 @@ for aa = 1: 1: length(NumVehiclePass)
     % Yaw Stability Check
     if strcmp(CR, 'fail') == 1
         fprintf('Yaw Stability Failure!\n%s\n', Tilda);
-        VehicleResults.Yaw_Fail(VehCount) = i;
-        VehCount = VehCount + 1;
+        VehicleResults.Yaw_Fail(i) = i;
         continue;
     end
 
@@ -428,8 +406,7 @@ for aa = 1: 1: length(NumVehiclePass)
     % Structural Check
     if strcmp(Out, 'fails') == 1,
         fprintf('Structural Failure!\n%s\n', Tilda);
-        VehicleResults.Struc_Fail(VehCount) = i;
-        VehCount = VehCount + 1;
+        VehicleResults.Struc_Fail(i) = i;
         continue;
     end
 
@@ -500,8 +477,7 @@ for aa = 1: 1: length(NumVehiclePass)
     % Structural Check
     if strcmp(Out, 'fails') == 1
         fprintf('Mars Launch Structural Failure!\n%s\n', Tilda);
-        VehicleResults.Struc_Mars_Fail(VehCount) = i;
-        VehCount = VehCount + 1;
+        VehicleResults.Struc_Mars_Fail(i) = i;
         continue;
     end
 
@@ -520,36 +496,31 @@ for aa = 1: 1: length(NumVehiclePass)
     dvRemain = MarsLaunch.S.dv_remaining -  MarsEarthTransfer.dv;
     if dvRemain < EarthCapture.dv
         fprintf('Not Enough dv for Capture! %0.3f km/s\n%s\n', dvRemain, Tilda);
-        VehicleResults.Earth_Capture_Fail(VehCount) = i;
-        VehCount = VehCount + 1;
+        VehicleResults.Earth_Capture_Fail(i) = i;
         continue;
     end
 
     % Vehicle Feasible Counter ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    % Save Vehicle if Pass
-    VehicleResults.Pass(VehCount) = i;
-    VehCount = VehCount + 1;
-
-    % % Format Data Error Table
-    % columnNames = {'Pass', 'Geo_Fail', 'Struc_Fail', 'Struc_Mars_Fail', 'Mars_G_Fail', 'Pitch_Fail', ...
-    %                'Yaw_Fail', 'Earth_Capture_Fail'};
     
     % [Gs] Max Mars G loading
-    VehiclePerformance(i, 1) = Max_MarsDescentG;
+    VehiclePerformance(VehCount, 1) = Max_MarsDescentG;
     fprintf('%f Gs\n', Max_MarsDescentG);
 
     % [km/s] Delta-v Remaining After Launch
-    VehiclePerformance(i, 2) = Launch.S.dv_remaining;
+    VehiclePerformance(VehCount, 2) = Launch.S.dv_remaining;
     fprintf('[km/s] dv Remaming After Launch\n\t%f \n', Launch.S.dv_remaining);
 
     % [km/s] Delta-v Remaining After Mars Launch
-    VehiclePerformance(i, 3) = MarsLaunch.S.dv_remaining;
+    VehiclePerformance(VehCount, 3) = MarsLaunch.S.dv_remaining;
     fprintf('[km/s] dv Remaming After Mars Launch\n\t%f\n', MarsLaunch.S.dv_remaining);
 
     % [km/s] Delta-v Remaining At LEO
-    VehiclePerformance(i, 4) = dvRemain;
+    VehiclePerformance(VehCount, 4) = dvRemain;
     fprintf('[km/s] dv Remaning At LEO\n\t%f \n', dvRemain);
+
+    % Save Vehicle if Pass
+    VehicleResults.Pass(i) = i;
+    VehCount = VehCount + 1;
 
     % Print Tilda
     fprintf('%s\n', Tilda);
