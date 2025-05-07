@@ -12,6 +12,7 @@ function Plot_Solution_Space(Spln, TOGW, TW0, Wpay, VehicleNo, P)
 
     % Get distinct colors
     Colors = lines(length(Saved_C1));
+    % Colors = copper(length(Saved_C1));
 
     % Create Figure
     figure( ...
@@ -47,8 +48,9 @@ function Plot_Solution_Space(Spln, TOGW, TW0, Wpay, VehicleNo, P)
 
         % Plot Data Point
         P.Marker    = '*';
+        P.Markersize = 25;
         P.LineStyle = 'none';
-        P.Color     = 'm';
+        P.Color     = 'r';
         Plot_3D_Function(P.Target_x, P.Target_y, P.Target_z, P);
         hold on;
 

@@ -2,16 +2,19 @@ clear all, clc, close all, format compact, format longG, tic;
 %% Imports ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Imported Data File
-load('Data.mat');
+% load('Data.mat');
+load('Data VA.mat');
 
 %% Data Reduction Settings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % [int#] Save Data Points of Interest
 % I_Save = 8;       % Cost
-I_Save = 1;
+I_Save = 14;
 
 L_Wpay  = length(unique(VehicleData.Wpay ));
 L_v_sep = length(unique(VehicleData.v_sep));
+
+TV.SS.OEW = 130;
 
 %% Reduce Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -159,13 +162,13 @@ P.x_Tick_I = 50;                        % [m^2]
 P.y_Tick_I = 200;                       % [kg -> Ton]
 P.z_Tick_I = 10;                        % [Ton]
 
-% [m^2, kg -> Ton, kg -> Ton] Plot Solution Space
-P.Title = 'Full Stack Solution Space Wpay';
-Plot_Solution_Space(CombTable.Wpay.FS_Spln, CombTable.Wpay.FS_TOGW/1000, CombTable.Wpay.Wpay/1000, CombTable.Wpay.FS_tau, length(CombTable.Wpay.Wpay), P);
-
-% [m^2, kg -> Ton, kg -> Ton] Plot Solution Space
-P.Title = 'Full Stack Solution Space for v_{sep}';
-Plot_Solution_Space(CombTable.v_sep.FS_Spln, CombTable.v_sep.FS_TOGW/1000, CombTable.v_sep.Wpay/1000, CombTable.v_sep.FS_tau, length(CombTable.v_sep.Wpay), P);
+% % [m^2, kg -> Ton, kg -> Ton] Plot Solution Space
+% P.Title = 'Full Stack Solution Space Wpay';
+% Plot_Solution_Space(CombTable.Wpay.FS_Spln, CombTable.Wpay.FS_TOGW/1000, CombTable.Wpay.Wpay/1000, CombTable.Wpay.FS_tau, length(CombTable.Wpay.Wpay), P);
+% 
+% % [m^2, kg -> Ton, kg -> Ton] Plot Solution Space
+% P.Title = 'Full Stack Solution Space for v_{sep}';
+% Plot_Solution_Space(CombTable.v_sep.FS_Spln, CombTable.v_sep.FS_TOGW/1000, CombTable.v_sep.Wpay/1000, CombTable.v_sep.FS_tau, length(CombTable.v_sep.Wpay), P);
 
 % Clean Workspace
 clear columnNames C TStore Converge_SH I_Save Plot_3D Reduce_Data Save_Data sortIndex i P MTV

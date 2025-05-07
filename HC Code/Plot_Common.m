@@ -6,6 +6,7 @@ function Plot_Common(x, y, C1, C2, VehicleNo, P)
 
     % Get distinct colors
     Colors = lines(VehicleNo);
+    % Colors = copper(VehicleNo);
     
     % Saved Converged C1
     Saved_C1 = unique(C1);

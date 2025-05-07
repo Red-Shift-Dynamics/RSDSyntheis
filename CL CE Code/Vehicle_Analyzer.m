@@ -74,6 +74,7 @@ FS.t = 4 * 10^-3;
 
 % [%] Allowable Error Tolerance
 tol = 12;
+% tol = 5;
 
 % [mt -> kg] Mars Launch Payload
 MarsWpay = 100 * 1000;
@@ -156,9 +157,14 @@ for aa = 1: 1: length(NumVehiclePass)
     VecIn.SH_Swet = VehicleData.SH_Swet(i);
     VecIn.SH_tau  = Vehicle.SH_tau(i);
     
+    % VecIn.FS_Vtot = Vehicle.FS_Vtot(i);
+    % VecIn.FS_Spln = VehicleData.FS_Spln(i);
+    % VecIn.FS_Swet = VehicleData.FS_Swet(i);
+    % VecIn.FS_tau  = Vehicle.FS_tau(i);
+    
+    
     % Generate Parametric Model
     [SS, SH, FS] = ParametricModelCode(SS, SH, FS, VecIn);
-    
     save('GeoOutputs', 'SS', 'SH', 'FS');
 
     % Calculate Geometry Vehicle Error
@@ -171,10 +177,15 @@ for aa = 1: 1: length(NumVehiclePass)
     Error(6,1) = (SH.Spln_tot - VecIn.SH_Spln)/VecIn.SH_Spln * 100;
     Error(7,1) = (SH.Swet_tot - VecIn.SH_Swet)/VecIn.SH_Swet * 100;
     Error(8,1) = (SH.tau      - VecIn.SH_tau )/VecIn.SH_tau  * 100;
+
+    % Error(9,1)  = (FS.V_tot    - VecIn.FS_Vtot)/VecIn.FS_Vtot * 100;
+    % Error(10,1) = (FS.Spln_tot - VecIn.FS_Spln)/VecIn.FS_Spln * 100;
+    % Error(11,1) = (FS.Swet_tot - VecIn.FS_Swet)/VecIn.FS_Swet * 100;
+    % Error(12,1) = (FS.tau      - VecIn.FS_tau )/VecIn.FS_tau  * 100;
     
     % Checks for Geometry Error
     if max(abs(Error)) > tol
-        % fprintf('Geo Error Too High %0.3f%%\n%s\n', max(abs(Error)), Tilda);
+        fprintf('Geo Error Too High %0.3f%%\n%s\n', max(abs(Error)), Tilda);
         VehicleResults.Geo_Fail(i) = i;
         continue;
     end
@@ -182,19 +193,26 @@ for aa = 1: 1: length(NumVehiclePass)
     % Print Current Vehicle Number
     fprintf('Vehicle %d \n', i);
 
-    % % Print Geometry Error
-    % fprintf('--- STARSHIP OVERALL TOTALS ---\n');
-    % fprintf('  SS CylL = %.3f m\n',   SS.H_Fuse);
-    % fprintf('  SS V    = %.3f%%\n',   Error(1,1));
-    % fprintf('  SS Spln = %.3f%%\n',   Error(2,1));
-    % fprintf('  SS Swet = %.3f%%\n',   Error(3,1));
-    % fprintf('  SS Tau  = %.3f%%\n\n', Error(4,1));
-    % fprintf('--- SUPER HEAVY (BOOSTER) ---\n');
-    % fprintf('  SH FusL = %.3f m\n',   SH.H_Fuse);
-    % fprintf('  SH V    = %.3f%%\n',   Error(5,1));
-    % fprintf('  SH Spln = %.3f%%\n',   Error(6,1));
-    % fprintf('  SH Swet = %.3f%%\n',   Error(7,1));
-    % fprintf('  SH Tau  = %.3f%%\n\n', Error(8,1));
+    % Print Geometry Error
+    fprintf('--- STARSHIP OVERALL TOTALS ---\n');
+    fprintf('  SS CylL = %.3f m\n',   SS.H_Fuse);
+    fprintf('  SS V    = %.3f%%\n',   Error(1,1));
+    fprintf('  SS Spln = %.3f%%\n',   Error(2,1));
+    fprintf('  SS Swet = %.3f%%\n',   Error(3,1));
+    fprintf('  SS Tau  = %.3f%%\n\n', Error(4,1));
+    fprintf('--- SUPER HEAVY (BOOSTER) ---\n');
+    fprintf('  SH FusL = %.3f m\n',   SH.H_Fuse);
+    fprintf('  SH V    = %.3f%%\n',   Error(5,1));
+    fprintf('  SH Spln = %.3f%%\n',   Error(6,1));
+    fprintf('  SH Swet = %.3f%%\n',   Error(7,1));
+    fprintf('  SH Tau  = %.3f%%\n\n', Error(8,1));
+
+    % fprintf('--- Full Stack ---\n');
+    % fprintf('  FS FusL = %.3f m\n',   FS.H_Fuse);
+    % fprintf('  FS V    = %.3f%%\n',   Error(9, 1));
+    % fprintf('  FS Spln = %.3f%%\n',   Error(10,1));
+    % fprintf('  FS Swet = %.3f%%\n',   Error(11,1));
+    % fprintf('  FS Tau  = %.3f%%\n\n', Error(12,1));
 
     % Geometry Inputs
     Geometry.SS.D        = FS.D;            % [m]   Starship Fuselage diameter
@@ -409,6 +427,9 @@ for aa = 1: 1: length(NumVehiclePass)
         VehicleResults.Struc_Fail(i) = i;
         continue;
     end
+
+    % [days] On Mars Time
+    OnMarsTime.dt = 962;        
 
     % Earth-Mars Transfer ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

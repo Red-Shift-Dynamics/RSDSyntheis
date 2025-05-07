@@ -49,27 +49,36 @@ if Plot_3D == true && Converge_SH == true
         % Set Target Point
         P.Target_x = TV.FS.Spln;                                    % [m^2] Planform Area        - Full Stack
         P.Target_y = TV.FS.TOGW;                                    % [Ton] Takeoff Gross Weight - Full Stack
-        P.Target_z = [(SH.N_eng * SH.ET0) / (TV.FS.TOGW * 1000)];   % [~]   Thrust to Weight     - Full Stack
+        % P.Target_z = [(SH.N_eng * SH.ET0) / (TV.FS.TOGW * 1000)];   % [~]   Thrust to Weight     - Full Stack
+        P.Target_z = 110;       % [Ton] Payload Weight
 
     end
 
     % Axis Labels
     P.x_Label = 'Planform Area, Spln (m^2)';
     P.y_Label = 'Takeoff Gross Weight, TOGW (Tons)';
-    P.z_Label = 'Thrust to Weight, T/W';
+    % P.z_Label = 'Thrust to Weight, T/W';
+    P.z_Label = 'Payload Weight, Wpay (Tons)';
+    % P.View    = [-130, 40];
+    P.View = [-40, 25];
 
     % Plot Properties
     P.Title = 'Full Stack Solution Space';
     P.x_Tick_I = 50;                        % [m^2]
     P.y_Tick_I = 200;                       % [kg -> Ton]
-    P.z_Tick_I = 0.2;                       % [~]
+    % P.z_Tick_I = 0.1;                       % [~]
+    P.z_Tick_I = 10;                        % [Ton]
 
-    % [m^2, kg -> Ton, ~] Plot Solution Space
-    Plot_Solution_Space(VehicleData.FS_Spln, VehicleData.FS_TOGW/1000, (SH.N_eng * SH.ET0) ./ VehicleData.FS_TOGW, ...
+    % % [m^2, kg -> Ton, ~] Plot Solution Space
+    % Plot_Solution_Space(VehicleData.FS_Spln, VehicleData.FS_TOGW/1000, (SH.N_eng * SH.ET0) ./ VehicleData.FS_TOGW, ...
+    %                     VehicleData.FS_tau, VehicleNo, P);
+
+    % [m^2, kg -> Ton, kg -> Ton] Plot Solution Space
+    Plot_Solution_Space(VehicleData.FS_Spln, VehicleData.FS_TOGW/1000, VehicleData.Wpay/1000, ...
                         VehicleData.Wpay, VehicleNo, P);
 
 end
-
+%{
 % OEW vs Planform Area ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Plot Starship OEW Target Value
@@ -161,6 +170,7 @@ if Converge_SH == true
     Plot_Spln_vs_TOGW(VehicleData.SH_Spln, VehicleData.SH_TOGW/1000, VehicleData.SH_tau, C2, VehicleNo, P)
 
 end
+%}
 
 %{
 %% Data Reduction ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

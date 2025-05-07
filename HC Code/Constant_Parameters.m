@@ -69,7 +69,7 @@ function [C, SS, SH] = Constant_Parameters()
     SH.rho_ppl = SS.rho_ppl;
     
     % [int#] # Engines - Superheavy
-    SH.N_eng = 33;
+    SH.N_eng = 28;
 
     % Raptor 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %{

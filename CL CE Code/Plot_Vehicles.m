@@ -49,13 +49,13 @@ end
 % Axis Labels
 P.x_Label = 'Planform Area, Spln (m^2)';
 P.y_Label = 'Takeoff Gross Weight, TOGW (Tons)';
-P.z_Label = 'Thrust to Weight, T/W';
+P.View    = [-340, 10];
 
 % Plot Properties
-P.Title = 'Full Stack Solution Space';
+P.Title = 'CE Solution Space';
 P.x_Tick_I = 50;                        % [m^2]
-P.y_Tick_I = 200;                       % [kg -> Ton]
-P.z_Tick_I = 0.2;                       % [~]
+P.y_Tick_I = 100;                       % [kg -> Ton]
+P.z_Tick_I = 0.02;                      % [~]
 % P.z_Tick_I = 100;
 
 % Passed Vehicle Numbers
@@ -70,24 +70,36 @@ for i = 1: 1: IntPass
 end
 
 % Max G Loading
-GMax = 6.05;
-GLoadingExceedVehicle = NumVehiclePass(VehiclePerformance.MaxGLoading < GMax);
+% GMax = 6.05;
+% GLoadingExceedVehicle = NumVehiclePass(VehiclePerformance.dvRemian > GMax);
+dvMax = 1;
+dvRemianVehicle = NumVehiclePass(VehiclePerformance.dvRemain < dvMax);
+
+%% Plots ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+% % [m^2, kg -> Ton, ~] Plot Solution Space
+% P.z_Label = 'Thrust to Weight, T/W';
+% Plot_Solution_Space(VehicleData.FS_Spln, VehicleData.FS_TOGW/1000, ...
+%                     (SH.N_eng * SH.ET0) ./ VehicleData.FS_TOGW, VehicleData.v_sep, VehicleNo, P);
 
 % % [m^2, kg -> Ton, ~] Plot Solution Space
 % Plot_Solution_Space(VehicleData.FS_Spln, VehicleData.FS_TOGW/1000, ...
-%                     (SH.N_eng * SH.ET0) ./ VehicleData.FS_TOGW, VehicleData.Wpay, VehicleNo, P);
+%                     VehicleData.SS_tau, VehicleData.v_sep, VehicleNo, P);
 
-% [m^2, kg -> Ton, ~] Plot Analyzed Solution Space
+% % [m^2, kg -> Ton, ~] Plot Analyzed Solution Space
+% P.z_Label = 'Thrust to Weight, T/W';
 % Plot_Analyzed_Solution_Space(VehicleData.FS_Spln, VehicleData.FS_TOGW/1000, ...
-%                           (SH.N_eng * SH.ET0) ./ VehicleData.FS_TOGW, VehicleResults, ChosenVehicle, P);
+%     (SH.N_eng * SH.ET0) ./ VehicleData.FS_TOGW, VehicleResults, NumVehiclePass, ChosenVehicle, dvRemianVehicle, P);
+% P.z_Label = 'Starship Slenderness, tau_SS';
 % Plot_Analyzed_Solution_Space(VehicleData.FS_Spln, VehicleData.FS_TOGW/1000, ...
-%                              VehicleData.SS_tau, VehicleResults, ChosenVehicle, GLoadingExceedVehicle, P);
-% Plot_Analyzed_Solution_Space(VehicleData.FS_Spln, VehicleData.FS_TOGW/1000, ...
-%                           VehicleData.v_sep, VehicleResults, VehicleNo, P);
+%              VehicleData.SS_tau, VehicleResults, NumVehiclePass, ChosenVehicle, dvRemianVehicle, P);
 
+% 3D Print ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-
+% Surf Plot
+P.z_Label = 'Thrust to Weight, T/W';
+Plot_3D_Print(VehicleData.FS_Spln, VehicleData.FS_TOGW/1000, ...
+    (SH.N_eng * SH.ET0) ./ VehicleData.FS_TOGW, NumVehiclePass, ChosenVehicle, P)
 
 %% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %}

@@ -24,7 +24,7 @@ Save_Data = true;
 P.Plot_TV = true;
 
 % [Ton] Dry Weight
-TV.SS.OEW = 180;                        % Starship
+TV.SS.OEW = 120;                        % Starship
 TV.SH.OEW = 320;                        % Superheavy
 TV.FS.OEW = TV.SS.OEW + TV.SH.OEW;      % Superheavy
 
@@ -41,13 +41,13 @@ TV.FS.Spln = TV.SS.Spln + TV.SH.Spln;   % Full Stack
 % Mission Trade Variables (MTV) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % [MTon -> kg] Payload Weight
-% Wpay = [100: 10: 150] * 1000;               % Trade Values
-Wpay = 125 * 1000;                          % Best Value
+Wpay = [100: 10: 150] * 1000;               % Trade Values
+% Wpay = 125 * 1000;                          % Best Value
 % Wpay = [100: 10: 140] * 1000;               % 4 Point Vehicles Raptor 2
 
 % [m/s] Separation Velocity
-% v_sep = [1300: 200: 2200];                  % Trade Values
-v_sep = [1300: 50: 2200];                  % Trade Values
+v_sep = [1300: 200: 2200];                  % Trade Values
+% v_sep = [1300: 50: 2200];                  % Trade Values
 % v_sep = 1400;                               % Best Value
 % v_sep = [1300: 100: 1500];                  % 4 Point Vehicles Raptor 2
 
